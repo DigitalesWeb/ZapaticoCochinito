@@ -75,3 +75,4 @@ lint/outputs/
 lint/tmp/
 lint-results-debug.xml
 lint-results-release.xml
+create_icons.sh

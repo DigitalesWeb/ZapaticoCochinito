@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="360" height="640" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="360" height="640" fill="#F3E5F5"/>
+  
+  <!-- Status Bar -->
+  <rect width="360" height="60" fill="#FFFFFF"/>
+  
+  <!-- Score Display -->
+  <text x="60" y="40" font-family="Arial" font-size="16" font-weight="bold" fill="#000000">Puntos: 150</text>
+  <text x="170" y="40" font-family="Arial" font-size="16" font-weight="bold" fill="#000000">Vidas: 3</text>
+  <text x="270" y="40" font-family="Arial" font-size="16" font-weight="bold" fill="#000000">Racha: 15</text>
+  
+  <!-- Game Area - Current Foot -->
+  <rect x="30" y="140" width="300" height="220" rx="15" fill="#FFFFFF" stroke="#6200EE" stroke-width="3"/>
+  <text x="180" y="260" font-family="Arial" font-size="32" font-weight="bold" fill="#2196F3" text-anchor="middle">PIE DERECHO</text>
+  
+  <!-- Foot Buttons -->
+  <rect x="20" y="440" width="150" height="180" rx="10" fill="#4CAF50"/>
+  <text x="95" y="520" font-family="Arial" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">PIE</text>
+  <text x="95" y="545" font-family="Arial" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">IZQUIERDO</text>
+  
+  <rect x="190" y="440" width="150" height="180" rx="10" fill="#2196F3"/>
+  <text x="265" y="520" font-family="Arial" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">PIE</text>
+  <text x="265" y="545" font-family="Arial" font-size="18" font-weight="bold" fill="#FFFFFF" text-anchor="middle">DERECHO</text>
+  
+  <!-- Title -->
+  <text x="180" y="100" font-family="Arial" font-size="24" font-weight="bold" fill="#6200EE" text-anchor="middle">Zapatico Cochinito</text>
+</svg>
