@@ -23,7 +23,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -38,12 +37,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.Shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -79,21 +76,12 @@ fun HomeScreen(
             modifier = Modifier.size(96.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        val titleStyle = MaterialTheme.typography.displayMedium.copy(
-            fontSize = 44.sp,
-            letterSpacing = 1.2.sp,
-            shadow = Shadow(
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
-                offset = Offset(0f, 6f),
-                blurRadius = 12f
-            )
-        )
         Text(
             text = stringResource(id = R.string.app_name),
-            style = titleStyle,
+            style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -116,15 +104,11 @@ fun HomeScreen(
                 onClick = onPlay,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(imageVector = Icons.Rounded.PlayArrow, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(id = R.string.home_play),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
+                Text(
+                    text = stringResource(id = R.string.home_play),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
             Spacer(modifier = Modifier.height(12.dp))
             Button(

@@ -2,7 +2,7 @@ package com.digitalesweb.zapaticocochinito.ui.game
 
 import android.media.AudioManager
 import android.media.ToneGenerator
-import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -63,7 +62,6 @@ fun GameScreen(
     onBeat: () -> Unit,
     onFootPressed: (Foot) -> Unit,
     onPause: () -> Unit,
-    onExit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -131,12 +129,8 @@ fun GameScreen(
     }
 
     val haptic = LocalHapticFeedback.current
+    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val showStartCard = !uiState.isRunning && !uiState.isGameOver
-
-    BackHandler {
-        onPause()
-        onExit()
-    }
 
     Surface(modifier = modifier.fillMaxSize()) {
         Box(
@@ -155,7 +149,7 @@ fun GameScreen(
                     score = uiState.score,
                     onExit = {
                         onPause()
-                        onExit()
+                        backDispatcher?.onBackPressed()
                     }
                 )
                 Spacer(modifier = Modifier.height(32.dp))
@@ -437,8 +431,6 @@ private fun StartGameCard(onStart: () -> Unit, modifier: Modifier = Modifier) {
                 ),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Icon(imageVector = Icons.Rounded.PlayArrow, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(id = R.string.game_ready_button),
                     style = MaterialTheme.typography.titleMedium,

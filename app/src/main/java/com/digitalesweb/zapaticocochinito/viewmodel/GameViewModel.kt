@@ -76,26 +76,6 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
         }
     }
 
-    fun resetGame() {
-        beatsSinceLastCambia = 0
-        invertBeatsRemaining = 0
-        cambiaAnnounceBeats = 0
-        mutableState.update {
-            it.copy(
-                currentPrompt = GamePrompt.Left,
-                expectedFoot = Foot.Left,
-                showCambia = false,
-                invertActive = false,
-                score = 0,
-                lives = GameUiState.MAX_LIVES,
-                isRunning = false,
-                isGameOver = false,
-                beat = 0,
-                currentBpm = currentSettings.difficulty.bpm
-            )
-        }
-    }
-
     fun onBeat() {
         val state = mutableState.value
         if (!state.isRunning || state.isGameOver) return
