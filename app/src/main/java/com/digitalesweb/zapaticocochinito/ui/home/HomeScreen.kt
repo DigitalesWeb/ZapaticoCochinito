@@ -169,15 +169,27 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
         }
     }
 
-    Text(
 
-        text = stringResource(id = R.string.home_icon_text),
-        fontSize = 65.sp,
+
+        val icons = stringResource(id = R.string.home_icon_text)
+        .split(" ")
+        .filter { it.isNotBlank() }
+
+    Row(
         modifier = modifier.graphicsLayer {
             scaleX = scale
             scaleY = scale
+        },
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        icons.forEach { icon ->
+            Text(
+                text = icon,
+                fontSize = 65.sp
+            )
         }
-    )
+    }
 }
 
 @Composable
