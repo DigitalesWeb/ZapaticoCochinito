@@ -99,7 +99,11 @@ private fun ZapaticoApp(
 
     Scaffold(
         bottomBar = {
-            if (currentDestination?.route in bottomDestinations.map { it.route }) {
+            val destinationsWithBottomBar = setOf(
+                ZapaticoRoutes.HOME,
+                ZapaticoRoutes.NOTIFICATIONS
+            )
+            if (currentDestination?.route in destinationsWithBottomBar) {
                 NavigationBar {
                     bottomDestinations.forEach { destination ->
                         val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
@@ -112,9 +116,6 @@ private fun ZapaticoApp(
                                     }
                                     launchSingleTop = true
                                     restoreState = true
-                                }
-                                if (destination.route == ZapaticoRoutes.GAME) {
-                                    onStartGame()
                                 }
                             },
                             icon = { Icon(destination.icon, contentDescription = null) },
@@ -134,7 +135,6 @@ private fun ZapaticoApp(
                 HomeScreen(
                     bestScore = appState.bestScore,
                     onPlay = {
-                        onStartGame()
                         navController.navigate(ZapaticoRoutes.GAME)
                     },
                     onOpenSettings = {

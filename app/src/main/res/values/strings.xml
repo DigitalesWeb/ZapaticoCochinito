@@ -7,6 +7,9 @@
     <string name="home_best_score_title">Mejor racha</string>
     <string name="home_best_score_hint">Sigue el ritmo y supera tu récord de aciertos.</string>
 
+    <string name="game_ready_title">¡Listo para jugar!</string>
+    <string name="game_ready_button">Comenzar</string>
+    <string name="game_exit">Salir del juego</string>
     <string name="game_score">Puntaje: %1$d</string>
     <string name="game_bpm">%1$d BPM</string>
     <string name="game_best">Récord: %1$d</string>
@@ -19,11 +22,12 @@
     <string name="game_button_left">IZQ</string>
     <string name="game_button_right">DER</string>
 
-    <string name="game_over_title">¡Juego terminado!</string>
+    <string name="game_over_title">Juego Terminado</string>
+    <string name="game_over_score_label">Puntaje</string>
     <string name="game_over_score">Puntaje final: %1$d</string>
     <string name="game_over_best">Récord actual: %1$d</string>
-    <string name="game_over_play_again">Volver a jugar</string>
-    <string name="game_over_home">Volver al inicio</string>
+    <string name="game_over_play_again">Jugar de Nuevo</string>
+    <string name="game_over_home">Volver al Inicio</string>
 
     <string name="settings_title">Configuración</string>
     <string name="settings_difficulty_label">Dificultad</string>
