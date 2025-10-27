@@ -1,5 +1,13 @@
 package com.digitalesweb.zapaticocochinito.ui.home
 
+import android.media.AudioManager
+import android.media.ToneGenerator
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +23,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.rounded.DirectionsWalk
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,15 +31,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalesweb.zapaticocochinito.R
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -58,11 +72,8 @@ fun HomeScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Spacer(modifier = Modifier.height(16.dp))
-        Icon(
-            imageVector = Icons.Rounded.DirectionsWalk,
-            contentDescription = null,
-            modifier = Modifier.size(96.dp),
-            tint = MaterialTheme.colorScheme.primary
+        RhythmicHomeIcon(
+            modifier = Modifier.size(96.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
@@ -125,6 +136,43 @@ fun HomeScreen(
             textAlign = TextAlign.Center
         )
     }
+}
+
+@Composable
+private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
+    val infiniteTransition = rememberInfiniteTransition(label = "homeIconPulse")
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.9f,
+        targetValue = 1.1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "homeIconScale"
+    )
+
+    val toneGenerator = remember { ToneGenerator(AudioManager.STREAM_NOTIFICATION, 40) }
+
+    DisposableEffect(toneGenerator) {
+        onDispose { toneGenerator.release() }
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 120)
+            delay(500)
+        }
+    }
+
+    Icon(
+        painter = painterResource(id = R.drawable.ic_shoes),
+        contentDescription = null,
+        tint = MaterialTheme.colorScheme.primary,
+        modifier = modifier.graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
+    )
 }
 
 @Composable
