@@ -41,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -170,10 +169,9 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
         }
     }
 
-    Icon(
-        painter = painterResource(id = R.drawable.ic_shoes),
-        contentDescription = null,
-        tint = MaterialTheme.colorScheme.primary,
+    Text(
+        text = "👟",
+        fontSize = 65.sp,
         modifier = modifier.graphicsLayer {
             scaleX = scale
             scaleY = scale
