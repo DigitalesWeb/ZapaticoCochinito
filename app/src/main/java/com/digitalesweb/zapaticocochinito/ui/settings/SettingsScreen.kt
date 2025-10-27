@@ -82,11 +82,11 @@ fun SettingsScreen(
                     fontWeight = FontWeight.Bold
                 )
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             SettingsSectionCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp)
+                    .padding(top = 12.dp)
             ) {
                 Text(
                     text = stringResource(id = R.string.settings_difficulty_label),
@@ -215,7 +215,7 @@ fun SettingsScreen(
 
 @Composable
 private fun DifficultySelector(selected: Difficulty, onSelect: (Difficulty) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Difficulty.entries.forEach { difficulty ->
             val isSelected = difficulty == selected
             Surface(
@@ -241,7 +241,7 @@ private fun DifficultySelector(selected: Difficulty, onSelect: (Difficulty) -> U
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                        .padding(horizontal = 20.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
