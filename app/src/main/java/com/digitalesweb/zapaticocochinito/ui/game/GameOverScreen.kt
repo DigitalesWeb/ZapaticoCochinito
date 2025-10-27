@@ -88,7 +88,7 @@ fun GameOverScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Icon(imageVector = Icons.Rounded.Refresh, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
+                //Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = stringResource(id = R.string.game_over_play_again),
                     fontSize = 20.sp,

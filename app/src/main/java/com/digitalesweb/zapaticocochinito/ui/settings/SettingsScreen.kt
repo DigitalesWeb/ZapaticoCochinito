@@ -33,6 +33,7 @@ import com.digitalesweb.zapaticocochinito.R
 import com.digitalesweb.zapaticocochinito.model.AppSettings
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Difficulty
+import androidx.compose.foundation.layout.width // <-- Add this line
 
 @Composable
 fun SettingsScreen(

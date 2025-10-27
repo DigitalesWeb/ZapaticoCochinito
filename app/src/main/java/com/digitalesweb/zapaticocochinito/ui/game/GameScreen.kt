@@ -55,6 +55,7 @@ import com.digitalesweb.zapaticocochinito.model.GameUiState
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
+
 @Composable
 fun GameScreen(
     uiState: GameUiState,
@@ -158,11 +159,11 @@ fun GameScreen(
             Spacer(modifier = Modifier.height(32.dp))
             FootButtons(
                 onLeft = {
-                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.MediumImpact)
+                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress) // Corrected
                     onFootPressed(Foot.Left)
                 },
                 onRight = {
-                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.MediumImpact)
+                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress) // Corrected
                     onFootPressed(Foot.Right)
                 },
                 modifier = Modifier.fillMaxWidth()
