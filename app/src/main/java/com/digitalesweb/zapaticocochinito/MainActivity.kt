@@ -148,7 +148,11 @@ private fun ZapaticoApp(
                     onStart = onStartGame,
                     onBeat = onBeat,
                     onFootPressed = onFootPressed,
-                    onPause = onPauseGame
+                    onPause = onPauseGame,
+                    onExit = {
+                        gameViewModel.resetGame()
+                        navController.popBackStack(ZapaticoRoutes.HOME, inclusive = false)
+                    }
                 )
             }
             composable(ZapaticoRoutes.NOTIFICATIONS) {
@@ -176,6 +180,7 @@ private fun ZapaticoApp(
                         }
                     },
                     onBackHome = {
+                        gameViewModel.resetGame()
                         navController.popBackStack(ZapaticoRoutes.HOME, false)
                     }
                 )
