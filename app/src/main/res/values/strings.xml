@@ -6,6 +6,7 @@
     <string name="home_footer">Hecho con cariño por Anderson Lugo 💫</string>
     <string name="home_best_score_title">Mejor racha</string>
     <string name="home_best_score_hint">Sigue el ritmo y supera tu récord de aciertos.</string>
+    <string name="home_icon_text">👟🐷</string>
 
     <string name="game_ready_title">¡Listo para jugar!</string>
     <string name="game_ready_button">Comenzar</string>

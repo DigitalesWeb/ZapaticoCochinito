@@ -64,7 +64,8 @@ class MainActivity : ComponentActivity() {
                     onVolumeChange = appViewModel::updateVolume,
                     onMetronomeToggle = appViewModel::updateMetronome,
                     onThemeChange = appViewModel::updateTheme,
-                    onRestartGame = { gameViewModel.startGame() }
+                    onRestartGame = { gameViewModel.startGame() },
+                    onResetGameState = { gameViewModel.resetGame() }
                 )
             }
         }
@@ -83,7 +84,8 @@ private fun ZapaticoApp(
     onVolumeChange: (Float) -> Unit,
     onMetronomeToggle: (Boolean) -> Unit,
     onThemeChange: (AppTheme) -> Unit,
-    onRestartGame: () -> Unit
+    onRestartGame: () -> Unit,
+    onResetGameState: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -181,6 +183,7 @@ private fun ZapaticoApp(
                         }
                     },
                     onBackHome = {
+                        onResetGameState()
                         navController.popBackStack(ZapaticoRoutes.HOME, false)
                     }
                 )
