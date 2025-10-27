@@ -53,6 +53,10 @@
 
     <string name="notifications_title">¡Pronto habrá sorpresas!</string>
     <string name="notifications_body">Mantente atento a nuevos desafíos, ritmos y zapatitos coleccionables.</string>
+    <string name="notifications_share_button">Compartir la app</string>
+    <string name="notifications_share_title">Compartir Zapatico Cochinito</string>
+    <string name="notifications_share_subject">Zapatico Cochinito</string>
+    <string name="notifications_share_message">Descubre Zapatico Cochinito, un minijuego rítmico para coordinar tus pies. ¡Vamos a jugar juntos!</string>
 
     <string name="bottom_home">Inicio</string>
     <string name="bottom_notifications">Novedades</string>
