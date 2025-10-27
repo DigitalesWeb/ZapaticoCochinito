@@ -27,10 +27,11 @@
 
     <string name="settings_title">Configuración</string>
     <string name="settings_difficulty_label">Dificultad</string>
-    <string name="difficulty_kid">Niño (70 BPM)</string>
-    <string name="difficulty_normal">Normal (90 BPM)</string>
-    <string name="difficulty_pro">Pro (120 BPM)</string>
-    <string name="settings_volume_label">Volumen del metrónomo</string>
+    <string name="difficulty_kid">Niño</string>
+    <string name="difficulty_normal">Normal</string>
+    <string name="difficulty_pro">Pro</string>
+    <string name="settings_difficulty_bpm_badge">%1$d BPM</string>
+    <string name="settings_volume_label">Volumen</string>
     <string name="settings_volume_value">%1$d %%</string>
     <string name="settings_metronome_label">Sonido del metrónomo</string>
     <string name="settings_metronome_hint">Activa un suave tick/tock en cada beat.</string>
@@ -38,6 +39,12 @@
     <string name="settings_back">Volver al inicio</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
+
+    <string name="settings_record_label">Récord</string>
+    <plurals name="settings_record_points">
+        <item quantity="one">%1$d punto</item>
+        <item quantity="other">%1$d puntos</item>
+    </plurals>
 
     <string name="notifications_title">¡Pronto habrá sorpresas!</string>
     <string name="notifications_body">Mantente atento a nuevos desafíos, ritmos y zapatitos coleccionables.</string>

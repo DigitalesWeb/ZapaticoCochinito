@@ -157,6 +157,7 @@ private fun ZapaticoApp(
             composable(ZapaticoRoutes.SETTINGS) {
                 SettingsScreen(
                     settings = appState.settings,
+                    bestScore = appState.bestScore,
                     onDifficultyChange = onDifficultyChange,
                     onVolumeChange = onVolumeChange,
                     onMetronomeToggle = onMetronomeToggle,
