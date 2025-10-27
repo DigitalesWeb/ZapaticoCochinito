@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -62,6 +63,7 @@ fun GameScreen(
     onBeat: () -> Unit,
     onFootPressed: (Foot) -> Unit,
     onPause: () -> Unit,
+    onExit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -132,6 +134,10 @@ fun GameScreen(
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val showStartCard = !uiState.isRunning && !uiState.isGameOver
 
+//    BackHandler {
+//        onPause()
+//        onExit()
+//    }
     Surface(modifier = modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -149,7 +155,8 @@ fun GameScreen(
                     score = uiState.score,
                     onExit = {
                         onPause()
-                        backDispatcher?.onBackPressed()
+                        onExit()
+                        //backDispatcher?.onBackPressed()
                     }
                 )
                 Spacer(modifier = Modifier.height(32.dp))

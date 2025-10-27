@@ -148,7 +148,12 @@ private fun ZapaticoApp(
                     onStart = onStartGame,
                     onBeat = onBeat,
                     onFootPressed = onFootPressed,
-                    onPause = onPauseGame
+                    onPause = onPauseGame,
+                    onExit = {
+                        onPauseGame()
+                        navController.navigate(ZapaticoRoutes.HOME)
+                    }
+
                 )
             }
             composable(ZapaticoRoutes.NOTIFICATIONS) {
