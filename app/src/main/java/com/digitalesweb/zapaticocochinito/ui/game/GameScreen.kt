@@ -420,7 +420,7 @@ private fun StartGameCard(onStart: () -> Unit, modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = stringResource(id = R.string.home_icon_text), fontSize = 44.sp)
+            Text(text = stringResource(id = R.string.game_icon_text), fontSize = 44.sp)
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = stringResource(id = R.string.game_ready_title),
