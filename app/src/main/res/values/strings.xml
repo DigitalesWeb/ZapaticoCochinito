@@ -1,3 +1,48 @@
 <resources>
-    <string name="app_name">ZapaticoCochinito</string>
+    <string name="app_name">Zapatico Cochinito</string>
+    <string name="home_description">Un minijuego rítmico para coordinar tus pies al ritmo del clásico “Zapatico Cochinito”. ¡Cuidado cuando diga CAMBIA!</string>
+    <string name="home_play">Jugar</string>
+    <string name="home_settings">Configuración / Settings</string>
+    <string name="home_footer">Hecho con cariño por Anderson Lugo 💫</string>
+    <string name="home_best_score_title">Mejor racha</string>
+    <string name="home_best_score_hint">Sigue el ritmo y supera tu récord de aciertos.</string>
+
+    <string name="game_score">Puntaje: %1$d</string>
+    <string name="game_bpm">%1$d BPM</string>
+    <string name="game_best">Récord: %1$d</string>
+    <string name="game_prompt_cambia">¡CAMBIA!</string>
+    <string name="game_prompt_left">IZQUIERDA</string>
+    <string name="game_prompt_right">DERECHA</string>
+    <string name="game_prompt_cambia_subtitle">Intercambia lados y sigue el ritmo</string>
+    <string name="game_prompt_inverted">Los lados están invertidos… ¡atento!</string>
+    <string name="game_prompt_follow">Toca el pie que indica el ritmo</string>
+    <string name="game_button_left">IZQ</string>
+    <string name="game_button_right">DER</string>
+
+    <string name="game_over_title">¡Juego terminado!</string>
+    <string name="game_over_score">Puntaje final: %1$d</string>
+    <string name="game_over_best">Récord actual: %1$d</string>
+    <string name="game_over_play_again">Volver a jugar</string>
+    <string name="game_over_home">Volver al inicio</string>
+
+    <string name="settings_title">Configuración</string>
+    <string name="settings_difficulty_label">Dificultad</string>
+    <string name="difficulty_kid">Niño (70 BPM)</string>
+    <string name="difficulty_normal">Normal (90 BPM)</string>
+    <string name="difficulty_pro">Pro (120 BPM)</string>
+    <string name="settings_volume_label">Volumen del metrónomo</string>
+    <string name="settings_volume_value">%1$d %%</string>
+    <string name="settings_metronome_label">Sonido del metrónomo</string>
+    <string name="settings_metronome_hint">Activa un suave tick/tock en cada beat.</string>
+    <string name="settings_theme_label">Tema de la app</string>
+    <string name="settings_back">Volver al inicio</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+
+    <string name="notifications_title">¡Pronto habrá sorpresas!</string>
+    <string name="notifications_body">Mantente atento a nuevos desafíos, ritmos y zapatitos coleccionables.</string>
+
+    <string name="bottom_home">Inicio</string>
+    <string name="bottom_notifications">Novedades</string>
+    <string name="bottom_game">Juego</string>
 </resources>
