@@ -170,6 +170,7 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
     }
 
     Text(
+
         text = stringResource(id = R.string.home_icon_text),
         fontSize = 65.sp,
         modifier = modifier.graphicsLayer {

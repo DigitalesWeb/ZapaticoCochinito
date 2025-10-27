@@ -15,8 +15,8 @@
     <string name="game_bpm">%1$d BPM</string>
     <string name="game_best">Récord: %1$d</string>
     <string name="game_prompt_cambia">¡CAMBIA!</string>
-    <string name="game_prompt_left">IZQUIERDA</string>
-    <string name="game_prompt_right">DERECHA</string>
+    <string name="game_prompt_left">👟 IZQUIERDA</string>
+    <string name="game_prompt_right">DERECHA 👟</string>
     <string name="game_prompt_cambia_subtitle">Intercambia lados y sigue el ritmo</string>
     <string name="game_prompt_inverted">Los lados están invertidos… ¡atento!</string>
     <string name="game_prompt_follow">Toca el pie que indica el ritmo</string>
