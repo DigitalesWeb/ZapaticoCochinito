@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Zapatico Cochinito</string>
+    <string name="games_app_id">630863606670</string>
+    <string name="leaderboard_high_score_id">Cgkljueak64SEAIQAQ</string>
+    <string name="play_games_sign_in_success">Sesión iniciada en Google Play Juegos</string>
+    <string name="play_games_sign_in_failed">No se pudo iniciar sesión en Google Play Juegos</string>
     <string name="home_description">Un minijuego rítmico para coordinar tus pies al ritmo del clásico “Zapatico Cochinito”. ¡Cuidado cuando diga CAMBIA!</string>
     <string name="home_play">Jugar</string>
     <string name="home_settings">Configuración / Settings</string>

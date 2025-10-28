@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.digitalesweb.zapaticocochinito.di.ServiceLocator
+import com.digitalesweb.zapaticocochinito.games.PlayGamesService
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Foot
 import com.digitalesweb.zapaticocochinito.ui.game.GameOverScreen
@@ -38,9 +39,13 @@ import com.digitalesweb.zapaticocochinito.viewmodel.AppViewModel
 import com.digitalesweb.zapaticocochinito.viewmodel.GameViewModel
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var playGamesService: PlayGamesService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        playGamesService = PlayGamesService(this)
         val repository = ServiceLocator.provideAppPreferencesRepository(this)
         setContent {
             val appViewModel: AppViewModel = viewModel(factory = AppViewModel.Factory(repository))
@@ -65,10 +70,16 @@ class MainActivity : ComponentActivity() {
                     onMetronomeToggle = appViewModel::updateMetronome,
                     onThemeChange = appViewModel::updateTheme,
                     onRestartGame = { gameViewModel.startGame() },
-                    onResetGameState = { gameViewModel.resetGame() }
+                    onResetGameState = { gameViewModel.resetGame() },
+                    onBestScoreUpdated = { score -> playGamesService.submitBestScore(score) }
                 )
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        playGamesService.signInIfNeeded()
     }
 }
 
@@ -85,7 +96,8 @@ private fun ZapaticoApp(
     onMetronomeToggle: (Boolean) -> Unit,
     onThemeChange: (AppTheme) -> Unit,
     onRestartGame: () -> Unit,
-    onResetGameState: () -> Unit
+    onResetGameState: () -> Unit,
+    onBestScoreUpdated: (Int) -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -96,6 +108,12 @@ private fun ZapaticoApp(
             if (navController.currentDestination?.route != ZapaticoRoutes.GAME_OVER) {
                 navController.navigate(ZapaticoRoutes.GAME_OVER)
             }
+        }
+    }
+
+    LaunchedEffect(gameState.bestScore) {
+        if (gameState.bestScore > 0) {
+            onBestScoreUpdated(gameState.bestScore)
         }
     }
 

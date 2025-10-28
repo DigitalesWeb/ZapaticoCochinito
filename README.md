@@ -31,6 +31,35 @@ Consulta [DESARROLLO.md](DESARROLLO.md) para instrucciones detalladas de compila
 - 🎨 Interfaz colorida y atractiva
 - 📱 Optimizado para dispositivos móviles en orientación vertical
 
+## ⚙️ Configuración de Google Play Juegos
+
+El repositorio ya está configurado con los identificadores oficiales de Zapatico Cochinito:
+
+- `games_app_id = 630863606670`
+- `leaderboard_high_score_id = Cgkljueak64SEAIQAQ`
+
+Si necesitas apuntar a otro proyecto o tablero de puntuaciones, actualiza los valores anteriores en `app/src/main/res/values/strings.xml` siguiendo estos pasos:
+
+1. Ingresa en [Google Play Console](https://play.google.com/console) y selecciona tu proyecto.
+2. Abre **Servicios de juegos de Google Play → Configuración y gestión → Configuración**. En la tarjeta **Información general** copia el valor **ID del juego** (numérico) y úsalo como `games_app_id`.
+3. Dentro de la misma sección entra en **Marcadores (Leaderboards)** y selecciona tu tabla de puntuaciones. El campo **ID del recurso** (por ejemplo `Cgkljueak64SEAIQAQ`) es el que debes colocar en `leaderboard_high_score_id`.
+4. Sincroniza el proyecto y verifica desde un dispositivo con Play Games instalado que el inicio de sesión y el envío de puntuaciones funcionen correctamente.
+
+## 🧾 Archivos para la consola de Google Play
+
+Al compilar la versión de distribución se generan automáticamente los artefactos que resuelven las advertencias de **desofuscación** y **símbolos nativos** en la consola:
+
+- `app/build/outputs/mapping/release/mapping.txt`: súbelo en la sección **Depuración > Archivos de desofuscación** del App Bundle correspondiente.
+- `app/build/outputs/native-debug-symbols/release/native-debug-symbols.zip`: súbelo en **Depuración > Símbolos nativos** para facilitar el análisis de ANR y fallos en dispositivos con código nativo.
+
+Para obtener ambos archivos ejecuta:
+
+```bash
+./gradlew bundleRelease
+```
+
+Después de subir un nuevo App Bundle, adjunta ambos archivos en la Play Console para que los reportes de fallos y ANR muestren stack traces legibles.
+
 ## 🎯 Objetivo
 
 Mantén la racha más larga posible de aciertos al ritmo, acumulando la mayor puntuación sin perder las 3 vidas.
