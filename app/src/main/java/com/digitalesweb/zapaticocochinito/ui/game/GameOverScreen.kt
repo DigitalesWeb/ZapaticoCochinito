@@ -5,11 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsets.Companion.safeDrawing
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Refresh
@@ -21,11 +24,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -41,18 +46,23 @@ fun GameOverScreen(
     onBackHome: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val gradient = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFFFFE6F0),
-            Color(0xFFFFF8FC)
+    val colorScheme = MaterialTheme.colorScheme
+    val gradient = remember(colorScheme) {
+        Brush.verticalGradient(
+            colors = listOf(
+                colorScheme.background,
+                lerp(colorScheme.background, colorScheme.surfaceVariant, 0.4f),
+                colorScheme.surface
+            )
         )
-    )
+    }
 
     Surface(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(gradient)
+                .windowInsetsPadding(WindowInsets.safeDrawing)
                 .padding(horizontal = 32.dp, vertical = 36.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
@@ -65,7 +75,7 @@ fun GameOverScreen(
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign = TextAlign.Center,
-                    color = Color(0xFF6A4D8F)
+                    color = colorScheme.primary
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 ScoreCard(score = score)
@@ -73,7 +83,7 @@ fun GameOverScreen(
                 Text(
                     text = stringResource(id = R.string.game_over_best, bestScore),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF7A6C90),
+                    color = colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             }
@@ -89,8 +99,8 @@ fun GameOverScreen(
                     onClick = onPlayAgain,
                     shape = RoundedCornerShape(28.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFF6F91),
-                        contentColor = Color.White
+                        containerColor = colorScheme.secondary,
+                        contentColor = colorScheme.onSecondary
                     )
                 ) {
                     Icon(imageVector = Icons.Rounded.Refresh, contentDescription = null)
@@ -109,10 +119,10 @@ fun GameOverScreen(
                         .height(56.dp),
                     onClick = onBackHome,
                     shape = RoundedCornerShape(28.dp),
-                    border = BorderStroke(1.2.dp, Color(0xFFF5C7DD)),
+                    border = BorderStroke(1.2.dp, colorScheme.outline.copy(alpha = 0.5f)),
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = Color.White.copy(alpha = 0.9f),
-                        contentColor = Color(0xFF6A4D8F)
+                        containerColor = colorScheme.surface,
+                        contentColor = colorScheme.primary
                     )
                 ) {
                     Icon(imageVector = Icons.Rounded.Home, contentDescription = null)
@@ -133,7 +143,7 @@ private fun ScoreCard(score: Int, modifier: Modifier = Modifier) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(36.dp),
-        color = Color.White.copy(alpha = 0.95f),
+        color = MaterialTheme.colorScheme.surface,
         tonalElevation = 8.dp,
         shadowElevation = 16.dp
     ) {
@@ -146,14 +156,14 @@ private fun ScoreCard(score: Int, modifier: Modifier = Modifier) {
             Text(
                 text = stringResource(id = R.string.game_over_score_label),
                 style = MaterialTheme.typography.titleMedium,
-                color = Color(0xFF6A4D8F)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
                 text = score.toString(),
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.Black,
-                color = Color(0xFFEF3E7A)
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     }

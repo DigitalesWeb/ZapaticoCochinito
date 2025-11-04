@@ -4,6 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsets.Companion.safeDrawing
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -124,7 +129,9 @@ private fun ZapaticoApp(
                 ZapaticoRoutes.NOTIFICATIONS
             )
             if (currentDestination?.route in destinationsWithBottomBar) {
-                NavigationBar {
+                NavigationBar(
+                    windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
+                ) {
                     bottomDestinations.forEach { destination ->
                         val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
                         NavigationBarItem(
@@ -149,7 +156,9 @@ private fun ZapaticoApp(
         NavHost(
             navController = navController,
             startDestination = ZapaticoRoutes.HOME,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding)
         ) {
             composable(ZapaticoRoutes.HOME) {
                 HomeScreen(
