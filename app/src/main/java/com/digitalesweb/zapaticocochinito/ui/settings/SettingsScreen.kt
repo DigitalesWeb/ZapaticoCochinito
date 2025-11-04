@@ -9,31 +9,48 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsets.Companion.safeDrawing
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.rounded.AutoAwesome
+import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.EmojiEvents
+import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material.icons.rounded.Psychology
 import androidx.compose.material.icons.rounded.VolumeUp
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Surface
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,6 +63,7 @@ import com.digitalesweb.zapaticocochinito.R
 import com.digitalesweb.zapaticocochinito.model.AppSettings
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Difficulty
+import androidx.compose.ui.graphics.vector.ImageVector
 import kotlin.math.roundToInt
 
 @Composable
@@ -59,9 +77,18 @@ fun SettingsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showDifficultyTutorial by rememberSaveable { mutableStateOf(false) }
+
+    if (showDifficultyTutorial) {
+        DifficultyTutorialDialog(onDismiss = { showDifficultyTutorial = false })
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
+            .windowInsetsPadding(
+                WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
+            )
             .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -94,6 +121,9 @@ fun SettingsScreen(
                     fontWeight = FontWeight.SemiBold
                 )
                 DifficultySelector(selected = settings.difficulty, onSelect = onDifficultyChange)
+                TextButton(onClick = { showDifficultyTutorial = true }) {
+                    Text(text = stringResource(id = R.string.settings_difficulty_tutorial_button))
+                }
             }
             Spacer(modifier = Modifier.height(20.dp))
             SettingsSectionCard(modifier = Modifier.fillMaxWidth()) {
@@ -287,6 +317,123 @@ private fun DifficultyBpmBadge(bpm: Int, highlighted: Boolean) {
         )
     }
 }
+
+@Composable
+private fun DifficultyTutorialDialog(onDismiss: () -> Unit) {
+    val steps = listOf(
+        TutorialStep(
+            icon = Icons.Rounded.Psychology,
+            title = R.string.settings_difficulty_tutorial_step1_title,
+            description = R.string.settings_difficulty_tutorial_step1_description
+        ),
+        TutorialStep(
+            icon = Icons.Rounded.AutoAwesome,
+            title = R.string.settings_difficulty_tutorial_step2_title,
+            description = R.string.settings_difficulty_tutorial_step2_description
+        ),
+        TutorialStep(
+            icon = Icons.Rounded.FavoriteBorder,
+            title = R.string.settings_difficulty_tutorial_step3_title,
+            description = R.string.settings_difficulty_tutorial_step3_description
+        ),
+        TutorialStep(
+            icon = Icons.Rounded.Bolt,
+            title = R.string.settings_difficulty_tutorial_step4_title,
+            description = R.string.settings_difficulty_tutorial_step4_description
+        )
+    )
+
+    var currentStep by rememberSaveable { mutableIntStateOf(0) }
+    val step = steps[currentStep]
+    val progress = (currentStep + 1f) / steps.size
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(id = R.string.settings_difficulty_tutorial_title))
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Surface(
+                    shape = RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    tonalElevation = 2.dp
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(88.dp)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = step.icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                }
+                Text(
+                    text = stringResource(id = step.title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(
+                    text = stringResource(id = step.description),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                LinearProgressIndicator(
+                    progress = progress,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = stringResource(
+                        id = R.string.settings_difficulty_tutorial_progress,
+                        currentStep + 1,
+                        steps.size
+                    ),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.End,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (currentStep < steps.lastIndex) {
+                        currentStep++
+                    } else {
+                        onDismiss()
+                    }
+                }
+            ) {
+                Text(
+                    text = if (currentStep < steps.lastIndex) {
+                        stringResource(id = R.string.settings_difficulty_tutorial_next)
+                    } else {
+                        stringResource(id = R.string.settings_difficulty_tutorial_finish)
+                    }
+                )
+            }
+        },
+        dismissButton = {
+            if (currentStep > 0) {
+                TextButton(onClick = { currentStep-- }) {
+                    Text(text = stringResource(id = R.string.settings_difficulty_tutorial_back))
+                }
+            }
+        }
+    )
+}
+
+private data class TutorialStep(
+    val icon: ImageVector,
+    val title: Int,
+    val description: Int
+)
 
 @Composable
 private fun SettingsSectionCard(

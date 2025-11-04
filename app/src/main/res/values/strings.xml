@@ -37,6 +37,20 @@
 
     <string name="settings_title">Configuración</string>
     <string name="settings_difficulty_label">Dificultad</string>
+    <string name="settings_difficulty_tutorial_button">Ver tour guiado</string>
+    <string name="settings_difficulty_tutorial_title">Descubre cómo se juega</string>
+    <string name="settings_difficulty_tutorial_progress">Paso %1$d de %2$d</string>
+    <string name="settings_difficulty_tutorial_next">Siguiente</string>
+    <string name="settings_difficulty_tutorial_finish">¡Entendido!</string>
+    <string name="settings_difficulty_tutorial_back">Paso anterior</string>
+    <string name="settings_difficulty_tutorial_step1_title">Mira la señal principal</string>
+    <string name="settings_difficulty_tutorial_step1_description">El cartel central te dirá si toca pie izquierdo, derecho o ¡CAMBIA! Mantén la vista allí.</string>
+    <string name="settings_difficulty_tutorial_step2_title">Sigue el ritmo del pulso</string>
+    <string name="settings_difficulty_tutorial_step2_description">Cada dificultad ajusta los BPM. Presiona el pie correcto siguiendo el tempo para mantener la racha.</string>
+    <string name="settings_difficulty_tutorial_step3_title">Cuida tus vidas</string>
+    <string name="settings_difficulty_tutorial_step3_description">Tienes tres corazones. Un error resta una vida, así que respira y concéntrate.</string>
+    <string name="settings_difficulty_tutorial_step4_title">Escala la dificultad</string>
+    <string name="settings_difficulty_tutorial_step4_description">Empieza con “Niño” para practicar, sube a “Normal” y atrévete con “Pro” cuando domines el ritmo.</string>
     <string name="difficulty_kid">Niño</string>
     <string name="difficulty_normal">Normal</string>
     <string name="difficulty_pro">Pro</string>
