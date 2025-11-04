@@ -3,7 +3,7 @@
     <string name="games_app_id">630863606670</string>
     <string name="leaderboard_high_score_id">Cgkljueak64SEAIQAQ</string>
     <string name="play_games_sign_in_success">Signed in to Google Play Games</string>
-    <string name="play_games_sign_in_failed">Couldn't sign in to Google Play Games</string>
+    <string name="play_games_sign_in_failed">Unable to sign in to Google Play Games</string>
     <string name="home_description">A rhythmic minigame to coordinate your feet to the classic “Zapatico Cochinito.” Watch out when it shouts SWITCH!</string>
     <string name="home_play">Play</string>
     <string name="home_settings">Settings</string>
@@ -44,7 +44,7 @@
     <string name="settings_difficulty_tutorial_finish">Got it!</string>
     <string name="settings_difficulty_tutorial_back">Previous step</string>
     <string name="settings_difficulty_tutorial_step1_title">Watch the main cue</string>
-    <string name="settings_difficulty_tutorial_step1_description">The center sign tells you if it's left, right, or SWITCH! Keep your eyes there.</string>
+    <string name="settings_difficulty_tutorial_step1_description">The center sign tells you if it is left, right, or SWITCH! Keep your eyes there.</string>
     <string name="settings_difficulty_tutorial_step2_title">Follow the pulse</string>
     <string name="settings_difficulty_tutorial_step2_description">Each difficulty adjusts the BPM. Press the right foot with the tempo to keep your streak.</string>
     <string name="settings_difficulty_tutorial_step3_title">Mind your lives</string>
@@ -78,7 +78,7 @@
     <string name="notifications_share_button">Share the app</string>
     <string name="notifications_share_title">Share Zapatico Cochinito</string>
     <string name="notifications_share_subject">Zapatico Cochinito</string>
-    <string name="notifications_share_message">Check out Zapatico Cochinito, a rhythmic minigame to coordinate your feet. Let's play together!</string>
+    <string name="notifications_share_message">Check out Zapatico Cochinito, a rhythmic minigame to coordinate your feet. Let us play together!</string>
 
     <string name="bottom_home">Home</string>
     <string name="bottom_notifications">News</string>
