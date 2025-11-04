@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.appcompat)
     implementation(libs.google.play.games.v2)
     implementation(libs.google.play.services.auth)
     testImplementation(libs.junit)
