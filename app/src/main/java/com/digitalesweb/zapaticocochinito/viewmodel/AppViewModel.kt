@@ -1,9 +1,12 @@
 package com.digitalesweb.zapaticocochinito.viewmodel
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.digitalesweb.zapaticocochinito.data.AppPreferencesRepository
+import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.AppUiState
 import com.digitalesweb.zapaticocochinito.model.Difficulty
@@ -46,6 +49,13 @@ class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel
     fun updateTheme(theme: AppTheme) {
         viewModelScope.launch {
             repository.updateTheme(theme)
+        }
+    }
+
+    fun updateLanguage(language: AppLanguage) {
+        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language.tag))
+        viewModelScope.launch {
+            repository.updateLanguage(language)
         }
     }
 

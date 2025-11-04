@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">Zapatico Cochinito</string>
+    <string name="games_app_id">630863606670</string>
+    <string name="leaderboard_high_score_id">Cgkljueak64SEAIQAQ</string>
+    <string name="play_games_sign_in_success">Signed in to Google Play Games</string>
+    <string name="play_games_sign_in_failed">Couldn't sign in to Google Play Games</string>
+    <string name="home_description">A rhythmic minigame to coordinate your feet to the classic “Zapatico Cochinito.” Watch out when it shouts SWITCH!</string>
+    <string name="home_play">Play</string>
+    <string name="home_settings">Settings</string>
+    <string name="home_footer">Made with love by Anderson Lugo 💫</string>
+    <string name="home_best_score_title">Best streak</string>
+    <string name="home_best_score_hint">Keep the beat and beat your accuracy record.</string>
+    <string name="home_icon_text">👟</string>
+
+    <string name="game_icon_text">👟🐷</string>
+    <string name="game_ready_title">Ready to play!</string>
+    <string name="game_ready_button">Start</string>
+    <string name="game_exit">Exit game</string>
+    <string name="game_score">Score: %1$d</string>
+    <string name="game_bpm">%1$d BPM</string>
+    <string name="game_best">Record: %1$d</string>
+    <string name="game_prompt_cambia">SWITCH!</string>
+    <string name="game_prompt_left">👟 LEFT</string>
+    <string name="game_prompt_right">RIGHT 👟</string>
+    <string name="game_prompt_cambia_subtitle">Swap sides and keep the beat</string>
+    <string name="game_prompt_inverted">The sides are inverted… stay sharp!</string>
+    <string name="game_prompt_follow">Tap the foot that matches the beat</string>
+    <string name="game_button_left">L</string>
+    <string name="game_button_right">R</string>
+
+    <string name="game_over_title">Game Over</string>
+    <string name="game_over_score_label">Score</string>
+    <string name="game_over_score">Final score: %1$d</string>
+    <string name="game_over_best">Current record: %1$d</string>
+    <string name="game_over_play_again">Play Again</string>
+    <string name="game_over_home">Back to Home</string>
+
+    <string name="settings_title">Settings</string>
+    <string name="settings_difficulty_label">Difficulty</string>
+    <string name="settings_difficulty_tutorial_button">Take the guided tour</string>
+    <string name="settings_difficulty_tutorial_title">Learn how to play</string>
+    <string name="settings_difficulty_tutorial_progress">Step %1$d of %2$d</string>
+    <string name="settings_difficulty_tutorial_next">Next</string>
+    <string name="settings_difficulty_tutorial_finish">Got it!</string>
+    <string name="settings_difficulty_tutorial_back">Previous step</string>
+    <string name="settings_difficulty_tutorial_step1_title">Watch the main cue</string>
+    <string name="settings_difficulty_tutorial_step1_description">The center sign tells you if it's left, right, or SWITCH! Keep your eyes there.</string>
+    <string name="settings_difficulty_tutorial_step2_title">Follow the pulse</string>
+    <string name="settings_difficulty_tutorial_step2_description">Each difficulty adjusts the BPM. Press the right foot with the tempo to keep your streak.</string>
+    <string name="settings_difficulty_tutorial_step3_title">Mind your lives</string>
+    <string name="settings_difficulty_tutorial_step3_description">You have three hearts. Every mistake costs one, so breathe and focus.</string>
+    <string name="settings_difficulty_tutorial_step4_title">Climb the difficulty</string>
+    <string name="settings_difficulty_tutorial_step4_description">Start with “Kid” to practice, move up to “Normal,” and go “Pro” when you own the beat.</string>
+    <string name="difficulty_kid">Kid</string>
+    <string name="difficulty_normal">Normal</string>
+    <string name="difficulty_pro">Pro</string>
+    <string name="settings_difficulty_bpm_badge">%1$d BPM</string>
+    <string name="settings_volume_label">Volume</string>
+    <string name="settings_volume_value">%1$d %%</string>
+    <string name="settings_metronome_label">Metronome sound</string>
+    <string name="settings_metronome_hint">Enable a soft tick/tock on every beat.</string>
+    <string name="settings_theme_label">App theme</string>
+    <string name="settings_back">Back to home</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="settings_language_label">App language</string>
+    <string name="language_spanish_label">🇲🇽 Spanish</string>
+    <string name="language_english_label">🇺🇸 English</string>
+
+    <string name="settings_record_label">Record</string>
+    <plurals name="settings_record_points">
+        <item quantity="one">%1$d point</item>
+        <item quantity="other">%1$d points</item>
+    </plurals>
+
+    <string name="notifications_title">Surprises coming soon!</string>
+    <string name="notifications_body">Stay tuned for new challenges, beats, and collectible little shoes.</string>
+    <string name="notifications_share_button">Share the app</string>
+    <string name="notifications_share_title">Share Zapatico Cochinito</string>
+    <string name="notifications_share_subject">Zapatico Cochinito</string>
+    <string name="notifications_share_message">Check out Zapatico Cochinito, a rhythmic minigame to coordinate your feet. Let's play together!</string>
+
+    <string name="bottom_home">Home</string>
+    <string name="bottom_notifications">News</string>
+    <string name="bottom_game">Game</string>
+</resources>

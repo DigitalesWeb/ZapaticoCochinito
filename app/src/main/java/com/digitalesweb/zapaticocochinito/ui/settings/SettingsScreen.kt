@@ -3,6 +3,7 @@ package com.digitalesweb.zapaticocochinito.ui.settings
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
@@ -54,16 +56,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.digitalesweb.zapaticocochinito.R
+import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppSettings
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Difficulty
-import androidx.compose.ui.graphics.vector.ImageVector
 import kotlin.math.roundToInt
 
 @Composable
@@ -74,6 +77,7 @@ fun SettingsScreen(
     onVolumeChange: (Float) -> Unit,
     onMetronomeToggle: (Boolean) -> Unit,
     onThemeChange: (AppTheme) -> Unit,
+    onLanguageChange: (AppLanguage) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -91,7 +95,14 @@ fun SettingsScreen(
             )
             .padding(horizontal = 24.dp, vertical = 24.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        val scrollState = rememberScrollState()
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .verticalScroll(scrollState)
+        ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -217,6 +228,15 @@ fun SettingsScreen(
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
+            SettingsSectionCard(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = stringResource(id = R.string.settings_language_label),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                LanguageSelector(selected = settings.language, onSelect = onLanguageChange)
+            }
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 text = stringResource(id = R.string.settings_theme_label),
                 style = MaterialTheme.typography.titleMedium
@@ -225,7 +245,7 @@ fun SettingsScreen(
             ThemeSelector(selected = settings.theme, onSelect = onThemeChange)
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             modifier = Modifier
@@ -466,6 +486,21 @@ private fun ThemeSelector(selected: AppTheme, onSelect: (AppTheme) -> Unit) {
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = AppTheme.entries.size)
             ) {
                 Text(text = stringResource(id = theme.label))
+            }
+        }
+    }
+}
+
+@Composable
+private fun LanguageSelector(selected: AppLanguage, onSelect: (AppLanguage) -> Unit) {
+    SingleChoiceSegmentedButtonRow {
+        AppLanguage.entries.forEachIndexed { index, language ->
+            SegmentedButton(
+                selected = selected == language,
+                onClick = { onSelect(language) },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = AppLanguage.entries.size)
+            ) {
+                Text(text = stringResource(id = language.label))
             }
         }
     }

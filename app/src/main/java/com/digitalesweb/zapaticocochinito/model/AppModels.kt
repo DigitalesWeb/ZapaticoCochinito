@@ -7,13 +7,15 @@ data class AppSettings(
     val difficulty: Difficulty = DEFAULT_DIFFICULTY,
     val volume: Float = DEFAULT_VOLUME,
     val metronomeEnabled: Boolean = DEFAULT_METRONOME_ENABLED,
-    val theme: AppTheme = DEFAULT_THEME
+    val theme: AppTheme = DEFAULT_THEME,
+    val language: AppLanguage = DEFAULT_LANGUAGE
 ) {
     companion object {
         val DEFAULT_DIFFICULTY = Difficulty.Normal
         const val DEFAULT_VOLUME = 0.7f
         const val DEFAULT_METRONOME_ENABLED = true
         val DEFAULT_THEME = AppTheme.Light
+        val DEFAULT_LANGUAGE = AppLanguage.SpanishLatam
     }
 }
 
@@ -33,6 +35,15 @@ enum class AppTheme(@StringRes val label: Int) {
 
     companion object {
         fun valueOrDefault(name: String): AppTheme = entries.find { it.name == name } ?: Light
+    }
+}
+
+enum class AppLanguage(val tag: String, @StringRes val label: Int) {
+    SpanishLatam("es-419", R.string.language_spanish_label),
+    EnglishUs("en-US", R.string.language_english_label);
+
+    companion object {
+        fun fromTag(tag: String): AppLanguage = entries.find { it.tag == tag } ?: SpanishLatam
     }
 }
 
