@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -20,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -30,6 +32,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.digitalesweb.zapaticocochinito.di.ServiceLocator
 import com.digitalesweb.zapaticocochinito.games.PlayGamesService
+import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Foot
 import com.digitalesweb.zapaticocochinito.ui.game.GameOverScreen
@@ -62,6 +65,12 @@ class MainActivity : ComponentActivity() {
                 gameViewModel.applySettings(appState.settings)
             }
 
+            LaunchedEffect(appState.settings.language) {
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.forLanguageTags(appState.settings.language.tag)
+                )
+            }
+
             ZapaticoCochinitoTheme(darkTheme = appState.settings.theme == AppTheme.Dark) {
                 ZapaticoApp(
                     appState = appState,
@@ -74,6 +83,7 @@ class MainActivity : ComponentActivity() {
                     onVolumeChange = appViewModel::updateVolume,
                     onMetronomeToggle = appViewModel::updateMetronome,
                     onThemeChange = appViewModel::updateTheme,
+                    onLanguageChange = appViewModel::updateLanguage,
                     onRestartGame = { gameViewModel.startGame() },
                     onResetGameState = { gameViewModel.resetGame() },
                     onBestScoreUpdated = { score -> playGamesService.submitBestScore(score) }
@@ -100,6 +110,7 @@ private fun ZapaticoApp(
     onVolumeChange: (Float) -> Unit,
     onMetronomeToggle: (Boolean) -> Unit,
     onThemeChange: (AppTheme) -> Unit,
+    onLanguageChange: (AppLanguage) -> Unit,
     onRestartGame: () -> Unit,
     onResetGameState: () -> Unit,
     onBestScoreUpdated: (Int) -> Unit
@@ -196,6 +207,7 @@ private fun ZapaticoApp(
                     onVolumeChange = onVolumeChange,
                     onMetronomeToggle = onMetronomeToggle,
                     onThemeChange = onThemeChange,
+                    onLanguageChange = onLanguageChange,
                     onBack = { navController.popBackStack() }
                 )
             }

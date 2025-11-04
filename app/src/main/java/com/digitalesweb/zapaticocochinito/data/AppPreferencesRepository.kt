@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppSettings
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Difficulty
@@ -37,7 +38,9 @@ class AppPreferencesRepository(private val context: Context) {
                 volume = preferences[VOLUME_KEY] ?: AppSettings.DEFAULT_VOLUME,
                 metronomeEnabled = preferences[METRONOME_KEY] ?: AppSettings.DEFAULT_METRONOME_ENABLED,
                 theme = preferences[THEME_KEY]?.let { AppTheme.valueOrDefault(it) }
-                    ?: AppSettings.DEFAULT_THEME
+                    ?: AppSettings.DEFAULT_THEME,
+                language = preferences[LANGUAGE_KEY]?.let { AppLanguage.fromTag(it) }
+                    ?: AppSettings.DEFAULT_LANGUAGE
             )
         }
 
@@ -77,6 +80,12 @@ class AppPreferencesRepository(private val context: Context) {
         }
     }
 
+    suspend fun updateLanguage(language: AppLanguage) {
+        context.dataStore.edit { preferences ->
+            preferences[LANGUAGE_KEY] = language.tag
+        }
+    }
+
     suspend fun updateHighScore(score: Int) {
         context.dataStore.edit { preferences ->
             val current = preferences[HIGH_SCORE_KEY] ?: 0
@@ -91,6 +100,7 @@ class AppPreferencesRepository(private val context: Context) {
         val VOLUME_KEY = floatPreferencesKey("volume")
         val METRONOME_KEY = booleanPreferencesKey("metronome")
         val THEME_KEY = stringPreferencesKey("theme")
+        val LANGUAGE_KEY = stringPreferencesKey("language")
         val HIGH_SCORE_KEY = intPreferencesKey("high_score")
 
         fun emptyPreferences(): Preferences = androidx.datastore.preferences.core.emptyPreferences()
