@@ -76,10 +76,20 @@ Mantener la racha más larga posible de aciertos al ritmo, acumulando la mayor p
 Cuando ejecutes la app en una tablet o teléfono real, puedes revisar los `Log.d` agregados usando cualquiera de los siguientes métodos:
 
 ### Con Android Studio
-1. Conecta el dispositivo mediante USB y verifica que aparezca en la lista de dispositivos (`Run > Select Device`).
-2. Abre **Logcat** desde la parte inferior de Android Studio.
-3. En el desplegable de filtros, elige tu aplicación (por `package`) y selecciona el nivel **Debug** para que se muestren los mensajes registrados con `Log.d`.
-4. Si necesitas enfocarte en una etiqueta concreta (por ejemplo, `AppViewModel`), escribe el nombre en el campo de búsqueda de Logcat.
+1. **Prepara la tablet o teléfono**
+   - Activa las *Opciones de desarrollador* (toca 7 veces en "Número de compilación") y habilita **Depuración por USB**.
+   - Conecta el cable USB y confirma la huella del equipo cuando el dispositivo lo solicite.
+2. **Selecciona el dispositivo físico**
+   - En Android Studio abre `Run > Select Device` (o usa la barra superior) y elige la tablet o teléfono conectado.
+   - Si no aparece, pulsa **Pair using Wi-Fi** o revisa que el controlador USB esté instalado.
+3. **Abre Logcat**
+   - Desde la barra inferior abre la herramienta **Logcat** y asegúrate de que en el menú `Device` esté seleccionada tu tablet.
+   - Verifica que el menú `Process` muestre el *package* de la app (`com.digitalesweb.zapaticocochinito`). Si no lo ves, pulsa **Run** para lanzar la app.
+4. **Filtra los `Log.d`**
+   - En el selector de nivel de log elige **Debug** para incluir los mensajes `Log.d` (además de `Info`, `Warn`, etc.).
+   - Para aislar una etiqueta específica escribe su nombre (por ejemplo, `AppViewModel`) en el cuadro de búsqueda o crea un filtro nuevo con `Edit Filter Configuration`.
+5. **Guarda o comparte la captura**
+   - Usa el botón **Export** (icono de disquete) para guardar el buffer actual o haz clic en **Clear logcat** antes de reproducir el problema para capturar solo la sesión que necesitas.
 
 ### Con ADB en la línea de comandos
 1. Asegúrate de tener `adb` instalado y que el dispositivo esté autorizado (`adb devices`).
