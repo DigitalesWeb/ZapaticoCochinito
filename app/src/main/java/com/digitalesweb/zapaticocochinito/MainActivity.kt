@@ -1,6 +1,7 @@
 package com.digitalesweb.zapaticocochinito
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -50,6 +51,8 @@ class MainActivity : ComponentActivity() {
 
     private lateinit var playGamesService: PlayGamesService
 
+    private val logTag = "MainActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -66,9 +69,12 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(appState.settings.language) {
+                val localeTags = appState.settings.language.localeTags()
+                Log.d(logTag, "Reaplicando idioma desde ajustes: ${'$'}{appState.settings.language.tag} -> ${'$'}localeTags")
                 AppCompatDelegate.setApplicationLocales(
-                    LocaleListCompat.forLanguageTags(appState.settings.language.localeTags())
+                    LocaleListCompat.forLanguageTags(localeTags)
                 )
+                Log.d(logTag, "Locales aplicados en actividad")
             }
 
             ZapaticoCochinitoTheme(darkTheme = appState.settings.theme == AppTheme.Dark) {

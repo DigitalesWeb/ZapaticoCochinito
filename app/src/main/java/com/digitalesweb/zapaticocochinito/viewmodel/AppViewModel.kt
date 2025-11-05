@@ -1,5 +1,6 @@
 package com.digitalesweb.zapaticocochinito.viewmodel
 
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel() {
+
+    private val logTag = "AppViewModel"
 
     val uiState = combine(
         repository.settingsFlow,
@@ -54,10 +57,14 @@ class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel
 
     fun updateLanguage(language: AppLanguage) {
         viewModelScope.launch {
+            Log.d(logTag, "Actualizando idioma a ${'$'}{language.tag}")
             repository.updateLanguage(language)
+            val localeTags = language.localeTags()
+            Log.d(logTag, "Persistencia completa. Aplicando locales ${'$'}localeTags")
             AppCompatDelegate.setApplicationLocales(
-                LocaleListCompat.forLanguageTags(language.localeTags())
+                LocaleListCompat.forLanguageTags(localeTags)
             )
+            Log.d(logTag, "Locales aplicados correctamente")
         }
     }
 
