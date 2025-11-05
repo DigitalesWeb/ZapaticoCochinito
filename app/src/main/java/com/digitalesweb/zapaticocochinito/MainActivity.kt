@@ -1,10 +1,9 @@
 package com.digitalesweb.zapaticocochinito
 
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
@@ -46,18 +45,27 @@ import com.digitalesweb.zapaticocochinito.ui.settings.SettingsScreen
 import com.digitalesweb.zapaticocochinito.ui.theme.ZapaticoCochinitoTheme
 import com.digitalesweb.zapaticocochinito.viewmodel.AppViewModel
 import com.digitalesweb.zapaticocochinito.viewmodel.GameViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var playGamesService: PlayGamesService
 
-    private val logTag = "MainActivity"
+    private fun applyLanguage(language: AppLanguage) {
+        val desiredLocales = LocaleListCompat.forLanguageTags(language.localeTags())
+        if (AppCompatDelegate.getApplicationLocales().toLanguageTags() != desiredLocales.toLanguageTags()) {
+            AppCompatDelegate.setApplicationLocales(desiredLocales)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         playGamesService = PlayGamesService(this)
         val repository = ServiceLocator.provideAppPreferencesRepository(this)
+        val initialLanguage = runBlocking { repository.settingsFlow.first().language }
+        applyLanguage(initialLanguage)
         setContent {
             val appViewModel: AppViewModel = viewModel(factory = AppViewModel.Factory(repository))
             val appState by appViewModel.uiState.collectAsStateWithLifecycle()
@@ -69,12 +77,7 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(appState.settings.language) {
-                val localeTags = appState.settings.language.localeTags()
-                Log.d(logTag, "Reaplicando idioma desde ajustes: ${'$'}{appState.settings.language.tag} -> ${'$'}localeTags")
-                AppCompatDelegate.setApplicationLocales(
-                    LocaleListCompat.forLanguageTags(localeTags)
-                )
-                Log.d(logTag, "Locales aplicados en actividad")
+                applyLanguage(appState.settings.language)
             }
 
             ZapaticoCochinitoTheme(darkTheme = appState.settings.theme == AppTheme.Dark) {
