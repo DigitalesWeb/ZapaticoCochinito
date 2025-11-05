@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(appState.settings.language) {
                 AppCompatDelegate.setApplicationLocales(
-                    LocaleListCompat.forLanguageTags(appState.settings.language.tag)
+                    LocaleListCompat.forLanguageTags(appState.settings.language.localeTags())
                 )
             }
 

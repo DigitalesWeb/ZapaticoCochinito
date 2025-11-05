@@ -38,12 +38,33 @@ enum class AppTheme(@StringRes val label: Int) {
     }
 }
 
-enum class AppLanguage(val tag: String, @StringRes val label: Int) {
-    SpanishLatam("es-419", R.string.language_spanish_label),
-    EnglishUs("en-US", R.string.language_english_label);
+enum class AppLanguage(
+    val tag: String,
+    @StringRes val label: Int,
+    private val fallbacks: List<String> = emptyList()
+) {
+    SpanishLatam(
+        tag = "es-419",
+        label = R.string.language_spanish_label,
+        fallbacks = listOf("es")
+    ),
+    EnglishUs(
+        tag = "en-US",
+        label = R.string.language_english_label,
+        fallbacks = listOf("en")
+    );
+
+    fun localeTags(): String = (listOf(tag) + fallbacks)
+        .distinctBy { it.lowercase() }
+        .joinToString(separator = ",")
+
+    private fun matchesTag(value: String): Boolean {
+        if (value.equals(tag, ignoreCase = true)) return true
+        return fallbacks.any { it.equals(value, ignoreCase = true) }
+    }
 
     companion object {
-        fun fromTag(tag: String): AppLanguage = entries.find { it.tag == tag } ?: SpanishLatam
+        fun fromTag(tag: String): AppLanguage = entries.find { it.matchesTag(tag) } ?: SpanishLatam
     }
 }
 
