@@ -31,7 +31,6 @@ import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Psychology
 import androidx.compose.material.icons.automirrored.rounded.VolumeUp
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -82,34 +81,8 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     var showDifficultyTutorial by rememberSaveable { mutableStateOf(false) }
-    var languageSelectionAlert by rememberSaveable { mutableStateOf<AppLanguage?>(null) }
-
     if (showDifficultyTutorial) {
         DifficultyTutorialDialog(onDismiss = { showDifficultyTutorial = false })
-    }
-
-    languageSelectionAlert?.let { pendingLanguage ->
-        AlertDialog(
-            onDismissRequest = { languageSelectionAlert = null },
-            title = {
-                Text(text = stringResource(id = R.string.settings_language_alert_title))
-            },
-            text = {
-                val languageName = stringResource(id = pendingLanguage.label)
-                Text(
-                    text = stringResource(
-                        id = R.string.settings_language_alert_message,
-                        languageName,
-                        pendingLanguage.resourceFilePath
-                    )
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { languageSelectionAlert = null }) {
-                    Text(text = stringResource(id = R.string.settings_language_alert_confirm))
-                }
-            }
-        )
     }
 
     Column(
@@ -261,10 +234,7 @@ fun SettingsScreen(
                 )
                 LanguageSelector(
                     selected = settings.language,
-                    onSelect = { language ->
-                        languageSelectionAlert = language
-                        onLanguageChange(language)
-                    }
+                    onSelect = onLanguageChange
                 )
             }
             Spacer(modifier = Modifier.height(24.dp))
