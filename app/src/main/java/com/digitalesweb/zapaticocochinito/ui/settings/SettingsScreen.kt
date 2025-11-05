@@ -493,14 +493,25 @@ private fun ThemeSelector(selected: AppTheme, onSelect: (AppTheme) -> Unit) {
 
 @Composable
 private fun LanguageSelector(selected: AppLanguage, onSelect: (AppLanguage) -> Unit) {
-    SingleChoiceSegmentedButtonRow {
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
         AppLanguage.entries.forEachIndexed { index, language ->
             SegmentedButton(
                 selected = selected == language,
                 onClick = { onSelect(language) },
+                modifier = Modifier.weight(1f),
                 shape = SegmentedButtonDefaults.itemShape(index = index, count = AppLanguage.entries.size)
             ) {
-                Text(text = stringResource(id = language.label))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(id = language.label),
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
