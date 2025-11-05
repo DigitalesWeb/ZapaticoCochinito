@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -22,7 +21,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -44,6 +42,7 @@ import com.digitalesweb.zapaticocochinito.ui.navigation.bottomDestinations
 import com.digitalesweb.zapaticocochinito.ui.notifications.NotificationsScreen
 import com.digitalesweb.zapaticocochinito.ui.settings.SettingsScreen
 import com.digitalesweb.zapaticocochinito.ui.theme.ZapaticoCochinitoTheme
+import com.digitalesweb.zapaticocochinito.util.applyAppLocales
 import com.digitalesweb.zapaticocochinito.viewmodel.AppViewModel
 import com.digitalesweb.zapaticocochinito.viewmodel.GameViewModel
 
@@ -69,12 +68,9 @@ class MainActivity : ComponentActivity() {
             }
 
             LaunchedEffect(appState.settings.language) {
-                val localeTags = appState.settings.language.localeTags()
-                Log.d(logTag, "Reaplicando idioma desde ajustes: ${'$'}{appState.settings.language.tag} -> ${'$'}localeTags")
-                AppCompatDelegate.setApplicationLocales(
-                    LocaleListCompat.forLanguageTags(localeTags)
-                )
-                Log.d(logTag, "Locales aplicados en actividad")
+                Log.d(logTag, "Reaplicando idioma desde ajustes: ${'$'}{appState.settings.language.tag}")
+                appState.settings.language.applyAppLocales(logTag)
+                Log.d(logTag, "Locales verificados en actividad")
             }
 
             ZapaticoCochinitoTheme(darkTheme = appState.settings.theme == AppTheme.Dark) {
