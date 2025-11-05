@@ -71,6 +71,31 @@ Mantener la racha más larga posible de aciertos al ritmo, acumulando la mayor p
    ```
    El APK estará en: `app/build/outputs/apk/release/`
 
+## Cómo Capturar Logs en Dispositivo Físico
+
+Cuando ejecutes la app en una tablet o teléfono real, puedes revisar los `Log.d` agregados usando cualquiera de los siguientes métodos:
+
+### Con Android Studio
+1. Conecta el dispositivo mediante USB y verifica que aparezca en la lista de dispositivos (`Run > Select Device`).
+2. Abre **Logcat** desde la parte inferior de Android Studio.
+3. En el desplegable de filtros, elige tu aplicación (por `package`) y selecciona el nivel **Debug** para que se muestren los mensajes registrados con `Log.d`.
+4. Si necesitas enfocarte en una etiqueta concreta (por ejemplo, `AppViewModel`), escribe el nombre en el campo de búsqueda de Logcat.
+
+### Con ADB en la línea de comandos
+1. Asegúrate de tener `adb` instalado y que el dispositivo esté autorizado (`adb devices`).
+2. Ejecuta el comando:
+   ```bash
+   adb logcat | grep AppViewModel
+   ```
+   Cambia `AppViewModel` por la etiqueta que deseas observar (`AppPreferencesRepository`, `MainActivity`, etc.).
+3. Para guardar los logs en un archivo mientras reproduces el problema, usa:
+   ```bash
+   adb logcat -v time > logs.txt
+   ```
+   Luego abre `logs.txt` con tu editor favorito y busca las entradas relevantes.
+
+> **Nota:** Si Logcat muestra demasiada información, añade filtros por nivel (`*:S AppViewModel:D`) o limpia el buffer antes de comenzar (`adb logcat -c`).
+
 ## Estructura del Proyecto
 
 ```
