@@ -4,9 +4,11 @@
     <string name="leaderboard_high_score_id">Cgkljueak64SEAIQAQ</string>
     <string name="play_games_sign_in_success">Signed in to Google Play Games</string>
     <string name="play_games_sign_in_failed">Unable to sign in to Google Play Games</string>
+    <string name="play_games_leaderboard_unavailable">The leaderboard is not available yet</string>
     <string name="home_description">A rhythmic minigame to coordinate your feet to the classic “Zapatico Cochinito.” Watch out when it shouts SWITCH!</string>
     <string name="home_play">Play</string>
     <string name="home_settings">Settings</string>
+    <string name="home_leaderboard">View global leaderboard</string>
     <string name="home_footer">Made with love by Anderson Lugo 💫</string>
     <string name="home_best_score_title">Best streak</string>
     <string name="home_best_score_hint">Keep the beat and beat your accuracy record.</string>
@@ -34,6 +36,7 @@
     <string name="game_over_best">Current record: %1$d</string>
     <string name="game_over_play_again">Play Again</string>
     <string name="game_over_home">Back to Home</string>
+    <string name="game_over_leaderboard">View leaderboard</string>
 
     <string name="settings_title">Settings</string>
     <string name="settings_difficulty_label">Difficulty</string>
@@ -61,6 +64,15 @@
     <string name="settings_metronome_hint">Enable a soft tick/tock on every beat.</string>
     <string name="settings_theme_label">App theme</string>
     <string name="settings_back">Back to home</string>
+    <string name="settings_cambia_title">Advanced SWITCH mode</string>
+    <string name="settings_cambia_description">Tune how often and how long SWITCH lasts when playing on Pro difficulty.</string>
+    <string name="settings_cambia_locked_hint">Switch to Pro difficulty to unlock these dials.</string>
+    <string name="settings_cambia_level_relaxed">Chill</string>
+    <string name="settings_cambia_level_relaxed_description">Longer breaks between SWITCH and a shorter duration.</string>
+    <string name="settings_cambia_level_standard">Balanced</string>
+    <string name="settings_cambia_level_standard_description">The recommended default experience.</string>
+    <string name="settings_cambia_level_frenzy">Frenzy</string>
+    <string name="settings_cambia_level_frenzy_description">SWITCH pops more often and keeps controls inverted longer.</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="settings_language_label">App language</string>
@@ -76,12 +88,22 @@
         <item quantity="other">%1$d points</item>
     </plurals>
 
-    <string name="notifications_title">Surprises coming soon!</string>
-    <string name="notifications_body">Stay tuned for new challenges, beats, and collectible little shoes.</string>
+    <string name="notifications_title">Highlights</string>
+    <string name="notifications_body">Here is what we are lining up for the next updates.</string>
+    <string name="notifications_share_hint">Invite your friends and compare scores in real time.</string>
     <string name="notifications_share_button">Share the app</string>
     <string name="notifications_share_title">Share Zapatico Cochinito</string>
     <string name="notifications_share_subject">Zapatico Cochinito</string>
     <string name="notifications_share_message">Check out Zapatico Cochinito, a rhythmic minigame to coordinate your feet. Let us play together!</string>
+    <string name="notification_highlight_tag_daily">Daily challenge</string>
+    <string name="notification_highlight_daily_title">Speed runs every morning</string>
+    <string name="notification_highlight_daily_description">Clear short foot sequences before the timer ends to earn boosters.</string>
+    <string name="notification_highlight_tag_league">Weekly league</string>
+    <string name="notification_highlight_league_title">Climb the rhythm league</string>
+    <string name="notification_highlight_league_description">Stack points on the global board and rank up with the community.</string>
+    <string name="notification_highlight_tag_style">Shop</string>
+    <string name="notification_highlight_style_title">Sneaker collection</string>
+    <string name="notification_highlight_style_description">Unlock skins and visual cues by completing special missions.</string>
 
     <string name="bottom_home">Home</string>
     <string name="bottom_notifications">News</string>

@@ -4,9 +4,11 @@
     <string name="leaderboard_high_score_id">Cgkljueak64SEAIQAQ</string>
     <string name="play_games_sign_in_success">Sesión iniciada en Google Play Juegos</string>
     <string name="play_games_sign_in_failed">No se pudo iniciar sesión en Google Play Juegos</string>
+    <string name="play_games_leaderboard_unavailable">El marcador todavía no está disponible</string>
     <string name="home_description">Un minijuego rítmico para coordinar tus pies al ritmo del clásico “Zapatico Cochinito”. ¡Cuidado cuando diga CAMBIA!</string>
     <string name="home_play">Jugar</string>
     <string name="home_settings">Configuración</string>
+    <string name="home_leaderboard">Ver marcador global</string>
     <string name="home_footer">Hecho con cariño por Anderson Lugo 💫</string>
     <string name="home_best_score_title">Mejor racha</string>
     <string name="home_best_score_hint">Sigue el ritmo y supera tu récord de aciertos.</string>
@@ -34,6 +36,7 @@
     <string name="game_over_best">Récord actual: %1$d</string>
     <string name="game_over_play_again">Jugar de Nuevo</string>
     <string name="game_over_home">Volver al Inicio</string>
+    <string name="game_over_leaderboard">Revisar marcador</string>
 
     <string name="settings_title">Configuración</string>
     <string name="settings_difficulty_label">Dificultad</string>
@@ -61,6 +64,15 @@
     <string name="settings_metronome_hint">Activa un suave tick/tock en cada beat.</string>
     <string name="settings_theme_label">Tema de la app</string>
     <string name="settings_back">Volver al inicio</string>
+    <string name="settings_cambia_title">Modo CAMBIA avanzado</string>
+    <string name="settings_cambia_description">Ajusta la frecuencia y duración de CAMBIA cuando juegas en dificultad Pro.</string>
+    <string name="settings_cambia_locked_hint">Activa la dificultad Pro para desbloquear estos controles especiales.</string>
+    <string name="settings_cambia_level_relaxed">Suave</string>
+    <string name="settings_cambia_level_relaxed_description">Más respiros entre CAMBIA y duración corta.</string>
+    <string name="settings_cambia_level_standard">Clásico</string>
+    <string name="settings_cambia_level_standard_description">La experiencia balanceada recomendada.</string>
+    <string name="settings_cambia_level_frenzy">Insano</string>
+    <string name="settings_cambia_level_frenzy_description">CAMBIA aparece seguido y se mantiene por más golpes.</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="settings_language_label">Idioma de la app</string>
@@ -76,12 +88,22 @@
         <item quantity="other">%1$d puntos</item>
     </plurals>
 
-    <string name="notifications_title">¡Pronto habrá sorpresas!</string>
-    <string name="notifications_body">Mantente atento a nuevos desafíos, ritmos y zapatitos coleccionables.</string>
+    <string name="notifications_title">Novedades destacadas</string>
+    <string name="notifications_body">Esto es lo que estamos preparando para los próximos días.</string>
+    <string name="notifications_share_hint">Invita a tus amigos y compara puntuaciones en tiempo real.</string>
     <string name="notifications_share_button">Compartir la app</string>
     <string name="notifications_share_title">Compartir Zapatico Cochinito</string>
     <string name="notifications_share_subject">Zapatico Cochinito</string>
     <string name="notifications_share_message">Descubre Zapatico Cochinito, un minijuego rítmico para coordinar tus pies. ¡Vamos a jugar juntos!</string>
+    <string name="notification_highlight_tag_daily">Desafío diario</string>
+    <string name="notification_highlight_daily_title">Reto exprés cada mañana</string>
+    <string name="notification_highlight_daily_description">Completa secuencias cortas antes de que acabe el tiempo y gana potenciadores.</string>
+    <string name="notification_highlight_tag_league">Liga semanal</string>
+    <string name="notification_highlight_league_title">Conquista la liga de ritmo</string>
+    <string name="notification_highlight_league_description">Suma puntos en el marcador global y asciende de división junto a la comunidad.</string>
+    <string name="notification_highlight_tag_style">Tienda</string>
+    <string name="notification_highlight_style_title">Colección de zapatitos</string>
+    <string name="notification_highlight_style_description">Desbloquea skins y pistas visuales al completar misiones especiales.</string>
 
     <string name="bottom_home">Inicio</string>
     <string name="bottom_notifications">Novedades</string>

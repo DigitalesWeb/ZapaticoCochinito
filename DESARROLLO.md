@@ -1,194 +1,119 @@
 # Zapatico Cochinito - Instrucciones de Desarrollo
 
 ## Descripción
-Zapatico Cochinito es un minijuego rítmico divertido y nostálgico, inspirado en la ronda tradicional "Zapatico, cochinito, cambia de piecito". Pon a prueba tu coordinación, reflejos y sentido del ritmo tocando el pie correcto al compás del juego.
+Zapatico Cochinito es un minijuego rítmico construido íntegramente con **Jetpack Compose** y **ViewModels**. El proyecto moderniza la dinámica tradicional de “Zapatico, cochinito, cambia de piecito” manteniendo un núcleo ligero y fácilmente extensible. Esta guía describe la arquitectura vigente, las herramientas necesarias y los puntos de extensión más comunes.
 
 ## Características del Juego
 
-### 🎮 Mecánicas de Juego
-- **Toca el pie correcto**: El juego te indicará qué pie tocar (izquierdo o derecho)
-- **Mantén el ritmo**: Tienes un tiempo limitado para tocar el pie correcto
-- **¡CAMBIA!**: Ocasionalmente aparece esta palabra que invierte los controles temporalmente
-- **Sistema de puntuación**: Gana 10 puntos por cada acierto
-- **Racha perfecta**: Mantén una secuencia de aciertos consecutivos
-- **Sistema de vidas**: Comienzas con 3 vidas, pierdes una por error o falta de respuesta
-- **Dificultad progresiva**: El ritmo se acelera conforme avanzas
+### 🎮 Mecánicas principales
+- **Golpes precisos**: cada acierto entrega **10 puntos** y mantiene la racha activa.
+- **Metrónomo dinámico**: el BPM base depende de la dificultad (70/90/120). Cada 6 aciertos consecutivos incrementan el tempo en 4 BPM hasta un máximo de 200 BPM.
+- **Modo ¡CAMBIA!**: invierte temporalmente los lados correctos. Su frecuencia y duración se adaptan según el “modo de caos” configurado para los jugadores Pro.
+- **Vidas limitadas**: dispones de 3 oportunidades. Al agotarse se muestra la pantalla de Game Over con la puntuación final.
+- **Marcador global**: la app sincroniza el mejor puntaje con Google Play Juegos y permite abrir el leaderboard desde Inicio o Game Over.
 
-### 🎯 Objetivo
-Mantener la racha más larga posible de aciertos al ritmo, acumulando la mayor puntuación sin perder las 3 vidas.
+### ⚙️ Ajustes personalizables
+- **Dificultad**: `Niño`, `Normal` y `Pro` ajustan el BPM base.
+- **Modo CAMBIA avanzado** (solo en `Pro`): controles para suavizar o intensificar la frecuencia/duración de CAMBIA.
+- **Volumen y metrónomo**: slider de volumen y switch para activar el pulso sonoro.
+- **Tema e idioma**: selector claro/oscuro y alternancia entre español LatAm e inglés (vía AppCompatDelegate + AppCompatLocaleManager).
 
 ## Requisitos de Desarrollo
 
-### Software Necesario
-- **Android Studio** (Arctic Fox o superior)
-- **JDK** 11 o superior
-- **Android SDK** con API Level 24 o superior
-- **Gradle** 8.0 (incluido en el proyecto)
+### Software
+- **Android Studio Flamingo (o superior)** con soporte para Compose.
+- **JDK 17** (incluido en el proyecto mediante Gradle Wrapper).
+- **SDK Android** API 24 mínimo, objetivo 34.
 
-### Requisitos Mínimos del Dispositivo
-- Android 7.0 (API 24) o superior
-- Pantalla táctil
+### Dispositivo
+- Android 7.0+ con pantalla táctil.
+- Recomendable habilitar 120 Hz para probar la aceleración del tempo.
 
 ## Cómo Compilar y Ejecutar
 
-### Opción 1: Usando Android Studio
+### Android Studio
+1. Clona el repositorio y ábrelo en Android Studio (`File > Open`).
+2. Espera la sincronización de Gradle.
+3. Ejecuta el módulo `app` sobre un emulador o dispositivo físico.
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone https://github.com/DigitalesWeb/ZapaticoCochinito.git
-   cd ZapaticoCochinito
-   ```
+### Línea de comandos
+```bash
+./gradlew assembleDebug   # Genera APK debug
+./gradlew installDebug    # Instala en dispositivo conectado
+./gradlew bundleRelease   # Genera AAB + mapping y símbolos nativos
+```
 
-2. **Abrir en Android Studio**
-   - Abrir Android Studio
-   - Seleccionar "Open an Existing Project"
-   - Navegar al directorio clonado y seleccionarlo
+## Arquitectura Técnica
 
-3. **Sincronizar Gradle**
-   - Android Studio automáticamente sincronizará las dependencias
-   - Esperar a que termine la sincronización
+```
+MainActivity
+ ├─ PlayGamesService (sign-in + leaderboard)
+ ├─ AppViewModel (DataStore + ajustes)
+ │   └─ AppPreferencesRepository (Preferences DataStore)
+ └─ GameViewModel (lógica de ritmo y puntuación)
 
-4. **Ejecutar en Emulador o Dispositivo**
-   - Conectar un dispositivo Android con USB debugging habilitado, o
-   - Crear un emulador Android desde AVD Manager
-   - Hacer clic en el botón "Run" (▶️)
+UI (Compose)
+ ├─ home/        → HomeScreen (botón play + leaderboard)
+ ├─ game/        → GameScreen & GameOverScreen
+ ├─ notifications/→ Feed estático de novedades
+ └─ settings/    → Ajustes generales + modo CAMBIA avanzado
+```
 
-### Opción 2: Usando Línea de Comandos
-
-1. **Compilar el APK de Debug**
-   ```bash
-   ./gradlew assembleDebug
-   ```
-
-2. **Instalar en Dispositivo Conectado**
-   ```bash
-   ./gradlew installDebug
-   ```
-
-3. **Compilar APK de Release**
-   ```bash
-   ./gradlew assembleRelease
-   ```
-   El APK estará en: `app/build/outputs/apk/release/`
-
-## Cómo Capturar Logs en Dispositivo Físico
-
-Cuando ejecutes la app en una tablet o teléfono real, puedes revisar los `Log.d` agregados usando cualquiera de los siguientes métodos:
-
-### Con Android Studio
-1. **Prepara la tablet o teléfono**
-   - Activa las *Opciones de desarrollador* (toca 7 veces en "Número de compilación") y habilita **Depuración por USB**.
-   - Conecta el cable USB y confirma la huella del equipo cuando el dispositivo lo solicite.
-2. **Selecciona el dispositivo físico**
-   - En Android Studio abre `Run > Select Device` (o usa la barra superior) y elige la tablet o teléfono conectado.
-   - Si no aparece, pulsa **Pair using Wi-Fi** o revisa que el controlador USB esté instalado.
-3. **Abre Logcat**
-   - Desde la barra inferior abre la herramienta **Logcat** y asegúrate de que en el menú `Device` esté seleccionada tu tablet.
-   - Verifica que el menú `Process` muestre el *package* de la app (`com.digitalesweb.zapaticocochinito`). Si no lo ves, pulsa **Run** para lanzar la app.
-4. **Filtra los `Log.d`**
-   - En el selector de nivel de log elige **Debug** para incluir los mensajes `Log.d` (además de `Info`, `Warn`, etc.).
-   - Para aislar una etiqueta específica escribe su nombre (por ejemplo, `AppViewModel`) en el cuadro de búsqueda o crea un filtro nuevo con `Edit Filter Configuration`.
-5. **Guarda o comparte la captura**
-   - Usa el botón **Export** (icono de disquete) para guardar el buffer actual o haz clic en **Clear logcat** antes de reproducir el problema para capturar solo la sesión que necesitas.
-
-### Con ADB en la línea de comandos
-1. Asegúrate de tener `adb` instalado y que el dispositivo esté autorizado (`adb devices`).
-2. Ejecuta el comando:
-   ```bash
-   adb logcat | grep AppViewModel
-   ```
-   Cambia `AppViewModel` por la etiqueta que deseas observar (`AppPreferencesRepository`, `MainActivity`, etc.).
-3. Para guardar los logs en un archivo mientras reproduces el problema, usa:
-   ```bash
-   adb logcat -v time > logs.txt
-   ```
-   Luego abre `logs.txt` con tu editor favorito y busca las entradas relevantes.
-
-> **Nota:** Si Logcat muestra demasiada información, añade filtros por nivel (`*:S AppViewModel:D`) o limpia el buffer antes de comenzar (`adb logcat -c`).
+- **Estado reactivo**: `GameViewModel` y `AppViewModel` exponen `StateFlow`. `collectAsStateWithLifecycle` asegura que la UI se actualice solo en estados activos.
+- **Persistencia**: las preferencias (dificultad, metronomo, idioma, tema, modo CAMBIA) se guardan en `AppPreferencesRepository` usando DataStore.
+- **Integración Play Games**: `PlayGamesService` inicializa el SDK, intenta el sign-in automático y expone `submitBestScore` y `showLeaderboard`.
+- **Internacionalización**: `AppLanguage` encapsula los recursos `values-b+es+419` y `values-en-rUS` y actualiza `AppLocales` dinámicamente.
 
 ## Estructura del Proyecto
 
 ```
-ZapaticoCochinito/
-├── app/
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/com/digitalesweb/zapaticocochinito/
-│   │       │   └── MainActivity.kt          # Lógica principal del juego
-│   │       ├── res/
-│   │       │   ├── layout/
-│   │       │   │   └── activity_main.xml    # Diseño de la interfaz
-│   │       │   ├── values/
-│   │       │   │   ├── strings.xml          # Textos en español
-│   │       │   │   ├── colors.xml           # Paleta de colores
-│   │       │   │   └── themes.xml           # Tema de la app
-│   │       │   └── mipmap-*/                # Iconos de la app
-│   │       └── AndroidManifest.xml          # Configuración de la app
-│   └── build.gradle                         # Configuración de compilación
-├── gradle/                                  # Gradle Wrapper
-├── build.gradle                             # Configuración raíz
-├── settings.gradle                          # Configuración de proyecto
-└── README.md                                # Este archivo
+app/src/main/java/com/digitalesweb/zapaticocochinito/
+├── MainActivity.kt                 # Host Compose + navegación
+├── games/PlayGamesService.kt       # Integración Google Play Juegos
+├── data/AppPreferencesRepository.kt# DataStore Preferences
+├── model/AppModels.kt              # AppSettings, enums y UI state
+├── ui/
+│   ├── home/HomeScreen.kt          # Portada animada con vista previa sonora
+│   ├── game/GameScreen.kt          # Juego y GameOver
+│   ├── notifications/…             # Feed de novedades y compartir app
+│   └── settings/SettingsScreen.kt  # Ajustes, incluyendo modo CAMBIA avanzado
+└── viewmodel/
+    ├── AppViewModel.kt             # Sincroniza ajustes
+    └── GameViewModel.kt            # Lógica de puntuación, CAMBIA y BPM
 ```
 
-## Detalles Técnicos
+Los recursos se localizan en `res/values/`, `values-b+es+419/` y `values-en-rUS/`, mientras que la configuración de Play Juegos vive en `res/values/strings.xml`.
 
-### Tecnologías Utilizadas
-- **Lenguaje**: Kotlin
-- **UI Framework**: Android Views con ViewBinding
-- **Arquitectura**: Activity con manejo de estado en memoria
-- **Animaciones**: ObjectAnimator para efectos visuales
-- **Threading**: Handler con Looper para temporizadores del juego
+## Flujo del Juego
 
-### Componentes Principales
+1. **Inicio**: `HomeScreen` muestra la racha máxima guardada y ejecuta un micro-preview de tono (6 pulsos) para no saturar al usuario.
+2. **Juego**: `GameScreen` arranca cuando se presiona “Jugar” y escucha los beats emitidos por `GameViewModel.onBeat()`.
+3. **CAMBIA**:
+   - Probabilidad base 22 %, ajustada por el modo seleccionado (`Relaxed`, `Standard`, `Frenzy`).
+   - Duración base 6 beats, escalada con el multiplicador y acotada entre 3 y 10 beats.
+4. **Final**: al perder todas las vidas se dispara `GameOverScreen`, se actualiza DataStore y se sincroniza el marcador global.
+5. **Leaderboard**: disponible desde Inicio y Game Over mediante `PlayGamesService.showLeaderboard()`.
 
-#### MainActivity.kt
-La actividad principal contiene toda la lógica del juego:
-- Gestión del estado del juego (activo, terminado)
-- Sistema de puntuación y vidas
-- Temporizadores para el ritmo del juego
-- Lógica de inversión de controles (CAMBIA)
-- Animaciones y retroalimentación visual
+## Notas de Integración
+- Para apuntar a otro proyecto de Google Play Juegos modifica `games_app_id` y `leaderboard_high_score_id` en `strings.xml` (y sus variantes regionales).
+- Los paquetes del leaderboard deben configurarse en Play Console para que `showLeaderboard` abra la UI nativa.
+- `POINTS_PER_HIT` está centralizado en `GameViewModel` para mantener la coherencia con la documentación.
 
-#### activity_main.xml
-Layout con:
-- Barra superior con estadísticas (puntos, vidas, racha)
-- Área central que muestra el pie actual a tocar
-- Indicador "¡CAMBIA!" con animación
-- Dos botones grandes para pie izquierdo y derecho
-- Pantalla de Game Over con puntuación final
+## Registro y Depuración
+- Usa Logcat con filtro `GameViewModel`, `AppViewModel` y `PlayGamesService`.
+- Para revisar DataStore en local, ejecuta `adb shell run-as com.digitalesweb.zapaticocochinito ls files/datastore/`.
 
-### Características Implementadas
-- ✅ Detección de toques correctos/incorrectos
-- ✅ Sistema de puntuación con rachas
-- ✅ Sistema de vidas (3 máximo)
-- ✅ Modo "CAMBIA" que invierte controles
-- ✅ Aceleración progresiva del ritmo
-- ✅ Retroalimentación visual con colores
-- ✅ Pantalla de Game Over
-- ✅ Opción de jugar de nuevo
-- ✅ Orientación forzada a vertical
+## Pruebas Recomendadas
+1. **Escenario base**: iniciar partida, acertar 6 golpes y confirmar el incremento de BPM.
+2. **CAMBIA Relaxed**: en Ajustes → Pro seleccionar `Suave` y comprobar menor frecuencia.
+3. **CAMBIA Frenzy**: seleccionar `Insano`, verificar más inversiones y duración ampliada.
+4. **Marcador**: tras superar un récord, abrir el leaderboard desde Inicio.
+5. **Persistencia**: reiniciar la app y confirmar que dificultad, idioma, tema y modo CAMBIA se recuerdan.
+6. **Localización**: alternar idioma y validar los nuevos textos del feed de novedades.
 
-### Mecánicas de Dificultad
-- **Intervalo base**: 1.5 segundos por pie
-- **Aceleración**: Se reduce 50ms cada 10 aciertos consecutivos
-- **Intervalo mínimo**: 800ms (máxima dificultad)
-- **Probabilidad de CAMBIA**: 20% en cada turno
-- **Duración de inversión**: 3-5 toques después de aparecer CAMBIA
+## Mantenimiento
+- Ejecuta `./gradlew lint` antes de subir cambios a producción.
+- Añade nuevos textos en los tres archivos de `values` para mantener la paridad lingüística.
+- Cuando ajustes la lógica de puntuación, sincroniza la documentación (`README.md`, `DESARROLLO.md`) para evitar discrepancias.
 
-## Posibles Mejoras Futuras
-
-- 🔊 Agregar efectos de sonido y música de fondo
-- 🏆 Sistema de puntuación máxima persistente
-- 📊 Estadísticas y gráficas de progreso
-- 🎨 Más temas visuales y personalizaciones
-- 🌐 Tabla de clasificación en línea
-- 🎵 Sincronización con música real
-- 👥 Modo multijugador
-- 🏅 Sistema de logros
-
-## Licencia
-Este proyecto está bajo licencia MIT. Ver archivo LICENSE para más detalles.
-
-## Contribuciones
-Las contribuciones son bienvenidas. Por favor, abre un issue o pull request para sugerencias y mejoras.
+¡Feliz desarrollo! Si encuentras oportunidades de mejora, abre un issue o PR documentando el impacto en la jugabilidad.

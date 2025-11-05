@@ -8,7 +8,8 @@ data class AppSettings(
     val volume: Float = DEFAULT_VOLUME,
     val metronomeEnabled: Boolean = DEFAULT_METRONOME_ENABLED,
     val theme: AppTheme = DEFAULT_THEME,
-    val language: AppLanguage = DEFAULT_LANGUAGE
+    val language: AppLanguage = DEFAULT_LANGUAGE,
+    val cambiaChaosLevel: CambiaChaosLevel = DEFAULT_CAMBIA_CHAOS_LEVEL
 ) {
     companion object {
         val DEFAULT_DIFFICULTY = Difficulty.Normal
@@ -16,6 +17,7 @@ data class AppSettings(
         const val DEFAULT_METRONOME_ENABLED = true
         val DEFAULT_THEME = AppTheme.Light
         val DEFAULT_LANGUAGE = AppLanguage.SpanishLatam
+        val DEFAULT_CAMBIA_CHAOS_LEVEL = CambiaChaosLevel.Standard
     }
 }
 
@@ -35,6 +37,36 @@ enum class AppTheme(@StringRes val label: Int) {
 
     companion object {
         fun valueOrDefault(name: String): AppTheme = entries.find { it.name == name } ?: Light
+    }
+}
+
+enum class CambiaChaosLevel(
+    val probabilityMultiplier: Float,
+    val durationMultiplier: Float,
+    @StringRes val title: Int,
+    @StringRes val description: Int
+) {
+    Relaxed(
+        probabilityMultiplier = 0.6f,
+        durationMultiplier = 0.8f,
+        title = R.string.settings_cambia_level_relaxed,
+        description = R.string.settings_cambia_level_relaxed_description
+    ),
+    Standard(
+        probabilityMultiplier = 1f,
+        durationMultiplier = 1f,
+        title = R.string.settings_cambia_level_standard,
+        description = R.string.settings_cambia_level_standard_description
+    ),
+    Frenzy(
+        probabilityMultiplier = 1.45f,
+        durationMultiplier = 1.25f,
+        title = R.string.settings_cambia_level_frenzy,
+        description = R.string.settings_cambia_level_frenzy_description
+    );
+
+    companion object {
+        fun valueOrDefault(name: String): CambiaChaosLevel = entries.find { it.name == name } ?: Standard
     }
 }
 
