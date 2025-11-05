@@ -41,18 +41,24 @@ enum class AppTheme(@StringRes val label: Int) {
 enum class AppLanguage(
     val tag: String,
     @StringRes val label: Int,
+    val resourceQualifier: String,
     private val fallbacks: List<String> = emptyList()
 ) {
     SpanishLatam(
         tag = "es-419",
         label = R.string.language_spanish_label,
+        resourceQualifier = "values-b+es+419",
         fallbacks = listOf("es")
     ),
     EnglishUs(
         tag = "en-US",
         label = R.string.language_english_label,
+        resourceQualifier = "values-en-rUS",
         fallbacks = listOf("en")
     );
+
+    val resourceFilePath: String
+        get() = "res/" + resourceQualifier + "/strings.xml"
 
     fun localeTags(): String = (listOf(tag) + fallbacks)
         .distinctBy { it.lowercase() }
