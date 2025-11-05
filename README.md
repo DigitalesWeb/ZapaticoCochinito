@@ -10,6 +10,7 @@ Zapatico Cochinito es un minijuego rítmico divertido y nostálgico, inspirado e
 5. **Mantén tu racha**: Cada acierto suma 10 puntos y aumenta tu racha
 6. **No pierdas tus vidas**: Empiezas con 3 vidas, cada error o tiempo agotado te resta una vida
 7. **El ritmo se acelera**: Mientras mejor juegues, más rápido se vuelve el juego
+8. **Comparte tu récord**: Abre el marcador global de Google Play Juegos desde la pantalla de inicio o al terminar una partida
 
 ## 📱 Instalación
 
@@ -25,10 +26,12 @@ Consulta [DESARROLLO.md](DESARROLLO.md) para instrucciones detalladas de compila
 
 - 🎯 Juego de ritmo simple e intuitivo
 - 🔄 Mecánica especial "¡CAMBIA!" que invierte los controles
-- 📊 Sistema de puntuación con rachas
+- 📊 Sistema de puntuación con rachas (10 puntos por golpe correcto)
 - ❤️ Sistema de vidas (3 vidas)
 - ⚡ Dificultad progresiva
 - 🎨 Interfaz colorida y atractiva
+- 🏆 Integración con Google Play Juegos y acceso directo al marcador global
+- 🌀 Controles avanzados de CAMBIA para personalizar el desafío en modo Pro
 - 📱 Optimizado para dispositivos móviles en orientación vertical
 
 ## ⚙️ Configuración de Google Play Juegos
@@ -68,7 +71,8 @@ Mantén la racha más larga posible de aciertos al ritmo, acumulando la mayor pu
 
 - **Plataforma**: Android (API 24+)
 - **Lenguaje**: Kotlin
-- **UI**: Android Views
+- **UI**: Jetpack Compose
+- **Arquitectura**: ViewModel + StateFlow + Navigation Compose
 - **Mínimo**: Android 7.0 (Nougat)
 - **Target**: Android 14
 

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class GameViewModel(private val repository: AppPreferencesRepository) : ViewModel() {
@@ -105,7 +106,7 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
         var nextInvertActive = state.invertActive
         if (shouldTriggerCambia) {
             nextInvertActive = !state.invertActive
-            invertBeatsRemaining = CAMBIA_DURATION_BEATS + 1
+            invertBeatsRemaining = cambiaDurationBeats() + 1
             cambiaAnnounceBeats = CAMBIA_ANNOUNCE_BEATS
             beatsSinceLastCambia = 0
         } else {
@@ -148,7 +149,7 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
 
         val wasCorrect = foot == state.expectedFoot
         if (wasCorrect) {
-            val newScore = state.score + 1
+            val newScore = state.score + POINTS_PER_HIT
             val newBest = max(state.bestScore, newScore)
             mutableState.update {
                 it.copy(
@@ -188,14 +189,28 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
     private fun shouldTriggerCambia(): Boolean {
         if (invertBeatsRemaining > 0) return false
         if (beatsSinceLastCambia < MIN_BEATS_BEFORE_CAMBIA) return false
-        return random.nextFloat() < CAMBIA_TRIGGER_PROBABILITY
+        val probability = cambiaProbability()
+        if (probability <= 0f) return false
+        return random.nextFloat() < probability
     }
 
     private fun accelerateBpm(score: Int): Int {
         val base = currentSettings.difficulty.bpm
         if (score <= 0) return base
-        val additional = (score / SCORE_PER_BPM_STEP) * BPM_INCREMENT
+        val hits = score / POINTS_PER_HIT
+        if (hits <= 0) return base
+        val additional = (hits / HITS_PER_BPM_STEP) * BPM_INCREMENT
         return min(base + additional, MAX_BPM)
+    }
+
+    private fun cambiaProbability(): Float {
+        val scaled = CAMBIA_TRIGGER_PROBABILITY * currentSettings.cambiaChaosLevel.probabilityMultiplier
+        return scaled.coerceIn(0f, MAX_CAMBIA_PROBABILITY)
+    }
+
+    private fun cambiaDurationBeats(): Int {
+        val scaled = (CAMBIA_DURATION_BEATS * currentSettings.cambiaChaosLevel.durationMultiplier).roundToInt()
+        return scaled.coerceIn(MIN_CAMBIA_DURATION_BEATS, MAX_CAMBIA_DURATION_BEATS)
     }
 
     class Factory(private val repository: AppPreferencesRepository) : ViewModelProvider.Factory {
@@ -210,11 +225,15 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
 
     companion object {
         private const val BPM_INCREMENT = 4
-        private const val SCORE_PER_BPM_STEP = 6
+        private const val HITS_PER_BPM_STEP = 6
+        private const val POINTS_PER_HIT = 10
         private const val MAX_BPM = 200
         private const val CAMBIA_DURATION_BEATS = 6
         private const val CAMBIA_ANNOUNCE_BEATS = 2
         private const val MIN_BEATS_BEFORE_CAMBIA = 6
         private const val CAMBIA_TRIGGER_PROBABILITY = 0.22f
+        private const val MAX_CAMBIA_PROBABILITY = 0.85f
+        private const val MIN_CAMBIA_DURATION_BEATS = 3
+        private const val MAX_CAMBIA_DURATION_BEATS = 10
     }
 }

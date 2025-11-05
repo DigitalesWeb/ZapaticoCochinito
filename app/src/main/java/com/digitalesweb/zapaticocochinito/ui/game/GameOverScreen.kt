@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Leaderboard
 import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -44,6 +45,7 @@ fun GameOverScreen(
     bestScore: Int,
     onPlayAgain: () -> Unit,
     onBackHome: () -> Unit,
+    onShowLeaderboard: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -109,6 +111,27 @@ fun GameOverScreen(
                         text = stringResource(id = R.string.game_over_play_again),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(14.dp))
+                OutlinedButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    onClick = onShowLeaderboard,
+                    shape = RoundedCornerShape(28.dp),
+                    border = BorderStroke(1.2.dp, colorScheme.outline.copy(alpha = 0.5f)),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        containerColor = colorScheme.surface,
+                        contentColor = colorScheme.primary
+                    )
+                ) {
+                    Icon(imageVector = Icons.Rounded.Leaderboard, contentDescription = null)
+                    Text(
+                        text = stringResource(id = R.string.game_over_leaderboard),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }

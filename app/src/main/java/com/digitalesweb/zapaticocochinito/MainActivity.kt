@@ -88,7 +88,9 @@ class MainActivity : ComponentActivity() {
                     onLanguageChange = appViewModel::updateLanguage,
                     onRestartGame = { gameViewModel.startGame() },
                     onResetGameState = { gameViewModel.resetGame() },
-                    onBestScoreUpdated = { score -> playGamesService.submitBestScore(score) }
+                    onBestScoreUpdated = { score -> playGamesService.submitBestScore(score) },
+                    onCambiaChaosChange = appViewModel::updateCambiaChaos,
+                    onShowLeaderboard = { playGamesService.showLeaderboard() }
                 )
             }
         }
@@ -115,7 +117,9 @@ private fun ZapaticoApp(
     onLanguageChange: (AppLanguage) -> Unit,
     onRestartGame: () -> Unit,
     onResetGameState: () -> Unit,
-    onBestScoreUpdated: (Int) -> Unit
+    onBestScoreUpdated: (Int) -> Unit,
+    onCambiaChaosChange: (com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel) -> Unit,
+    onShowLeaderboard: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -181,7 +185,8 @@ private fun ZapaticoApp(
                     },
                     onOpenSettings = {
                         navController.navigate(ZapaticoRoutes.SETTINGS)
-                    }
+                    },
+                    onShowLeaderboard = onShowLeaderboard
                 )
             }
             composable(ZapaticoRoutes.GAME) {
@@ -210,6 +215,7 @@ private fun ZapaticoApp(
                     onMetronomeToggle = onMetronomeToggle,
                     onThemeChange = onThemeChange,
                     onLanguageChange = onLanguageChange,
+                    onCambiaChaosChange = onCambiaChaosChange,
                     onBack = { navController.popBackStack() }
                 )
             }
@@ -226,7 +232,8 @@ private fun ZapaticoApp(
                     onBackHome = {
                         onResetGameState()
                         navController.popBackStack(ZapaticoRoutes.HOME, false)
-                    }
+                    },
+                    onShowLeaderboard = onShowLeaderboard
                 )
             }
         }

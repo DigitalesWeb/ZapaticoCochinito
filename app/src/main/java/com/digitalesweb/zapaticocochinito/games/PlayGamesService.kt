@@ -49,6 +49,22 @@ class PlayGamesService(private val activity: ComponentActivity) {
         leaderboardsClient.submitScore(leaderboardId, score.toLong())
     }
 
+    fun showLeaderboard() {
+        val leaderboardId = activity.getString(R.string.leaderboard_high_score_id)
+        if (leaderboardId.isBlank() || leaderboardId.startsWith("REEMPLAZA")) {
+            Toast.makeText(activity, R.string.play_games_leaderboard_unavailable, Toast.LENGTH_SHORT).show()
+            return
+        }
+        leaderboardsClient.getLeaderboardIntent(leaderboardId)
+            .addOnSuccessListener(activity) { intent ->
+                activity.startActivity(intent)
+            }
+            .addOnFailureListener(activity) { error ->
+                Log.w(TAG, "No se pudo abrir el leaderboard", error)
+                Toast.makeText(activity, R.string.play_games_leaderboard_unavailable, Toast.LENGTH_SHORT).show()
+            }
+    }
+
     private fun notifySignInSuccess() {
         Toast.makeText(activity, R.string.play_games_sign_in_success, Toast.LENGTH_SHORT).show()
     }

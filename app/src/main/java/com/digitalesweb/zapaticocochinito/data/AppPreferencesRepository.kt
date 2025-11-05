@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppSettings
+import com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Difficulty
 import kotlinx.coroutines.flow.Flow
@@ -43,7 +44,9 @@ class AppPreferencesRepository(private val context: Context) {
                 theme = preferences[THEME_KEY]?.let { AppTheme.valueOrDefault(it) }
                     ?: AppSettings.DEFAULT_THEME,
                 language = preferences[LANGUAGE_KEY]?.let { AppLanguage.fromTag(it) }
-                    ?: AppSettings.DEFAULT_LANGUAGE
+                    ?: AppSettings.DEFAULT_LANGUAGE,
+                cambiaChaosLevel = preferences[CAMBIA_CHAOS_KEY]?.let { CambiaChaosLevel.valueOrDefault(it) }
+                    ?: AppSettings.DEFAULT_CAMBIA_CHAOS_LEVEL
             )
         }
 
@@ -90,6 +93,12 @@ class AppPreferencesRepository(private val context: Context) {
         Log.d(logTag, "Idioma guardado en DataStore: ${'$'}{language.tag}")
     }
 
+    suspend fun updateCambiaChaos(level: CambiaChaosLevel) {
+        context.dataStore.edit { preferences ->
+            preferences[CAMBIA_CHAOS_KEY] = level.name
+        }
+    }
+
     suspend fun updateHighScore(score: Int) {
         context.dataStore.edit { preferences ->
             val current = preferences[HIGH_SCORE_KEY] ?: 0
@@ -106,6 +115,7 @@ class AppPreferencesRepository(private val context: Context) {
         val THEME_KEY = stringPreferencesKey("theme")
         val LANGUAGE_KEY = stringPreferencesKey("language")
         val HIGH_SCORE_KEY = intPreferencesKey("high_score")
+        val CAMBIA_CHAOS_KEY = stringPreferencesKey("cambia_chaos")
 
         fun emptyPreferences(): Preferences = androidx.datastore.preferences.core.emptyPreferences()
     }

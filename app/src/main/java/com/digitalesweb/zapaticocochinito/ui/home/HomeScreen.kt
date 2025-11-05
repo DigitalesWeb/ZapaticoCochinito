@@ -35,6 +35,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -59,6 +60,7 @@ fun HomeScreen(
     bestScore: Int,
     onPlay: () -> Unit,
     onOpenSettings: () -> Unit,
+    onShowLeaderboard: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -140,6 +142,18 @@ fun HomeScreen(
                     )
                 }
             }
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                onClick = onShowLeaderboard
+            ) {
+                Text(
+                    text = stringResource(id = R.string.home_leaderboard),
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
         Spacer(modifier = Modifier.height(32.dp))
         Text(
@@ -171,15 +185,13 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
     }
 
     LaunchedEffect(Unit) {
-        while (true) {
+        repeat(PREVIEW_TONE_PULSES) {
             toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 120)
-            delay(500)
+            delay(PREVIEW_TONE_INTERVAL_MS)
         }
     }
 
-
-
-        val icons = stringResource(id = R.string.home_icon_text)
+    val icons = stringResource(id = R.string.home_icon_text)
         .split(" ")
         .filter { it.isNotBlank() }
 
@@ -199,6 +211,9 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
         }
     }
 }
+
+private const val PREVIEW_TONE_PULSES = 6
+private const val PREVIEW_TONE_INTERVAL_MS = 500L
 
 @Composable
 private fun ScoreCard(bestScore: Int, modifier: Modifier = Modifier) {

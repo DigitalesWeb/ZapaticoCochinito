@@ -8,6 +8,7 @@ import com.digitalesweb.zapaticocochinito.data.AppPreferencesRepository
 import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.AppUiState
+import com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel
 import com.digitalesweb.zapaticocochinito.model.Difficulty
 import com.digitalesweb.zapaticocochinito.util.applyAppLocales
 import kotlinx.coroutines.flow.SharingStarted
@@ -61,6 +62,12 @@ class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel
             Log.d(logTag, "Persistencia completa. Aplicando locales")
             language.applyAppLocales(logTag)
             Log.d(logTag, "Locales aplicados correctamente")
+        }
+    }
+
+    fun updateCambiaChaos(level: CambiaChaosLevel) {
+        viewModelScope.launch {
+            repository.updateCambiaChaos(level)
         }
     }
 

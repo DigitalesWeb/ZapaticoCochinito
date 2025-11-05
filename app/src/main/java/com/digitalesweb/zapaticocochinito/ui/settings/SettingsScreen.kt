@@ -66,6 +66,7 @@ import com.digitalesweb.zapaticocochinito.R
 import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppSettings
 import com.digitalesweb.zapaticocochinito.model.AppTheme
+import com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel
 import com.digitalesweb.zapaticocochinito.model.Difficulty
 import kotlin.math.roundToInt
 
@@ -78,6 +79,7 @@ fun SettingsScreen(
     onMetronomeToggle: (Boolean) -> Unit,
     onThemeChange: (AppTheme) -> Unit,
     onLanguageChange: (AppLanguage) -> Unit,
+    onCambiaChaosChange: (CambiaChaosLevel) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -133,6 +135,34 @@ fun SettingsScreen(
                 DifficultySelector(selected = settings.difficulty, onSelect = onDifficultyChange)
                 TextButton(onClick = { showDifficultyTutorial = true }) {
                     Text(text = stringResource(id = R.string.settings_difficulty_tutorial_button))
+                }
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            SettingsSectionCard(modifier = Modifier.fillMaxWidth()) {
+                val isPro = settings.difficulty == Difficulty.Pro
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.settings_cambia_title),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Text(
+                        text = stringResource(id = R.string.settings_cambia_description),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    CambiaChaosSelector(
+                        selected = settings.cambiaChaosLevel,
+                        enabled = isPro,
+                        onSelect = onCambiaChaosChange
+                    )
+                    if (!isPro) {
+                        Text(
+                            text = stringResource(id = R.string.settings_cambia_locked_hint),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -337,6 +367,45 @@ private fun DifficultyBpmBadge(bpm: Int, highlighted: Boolean) {
             fontWeight = FontWeight.SemiBold,
             color = contentColor
         )
+    }
+}
+
+@Composable
+private fun CambiaChaosSelector(
+    selected: CambiaChaosLevel,
+    enabled: Boolean,
+    onSelect: (CambiaChaosLevel) -> Unit
+) {
+    val levels = CambiaChaosLevel.entries
+    SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
+        levels.forEachIndexed { index, level ->
+            SegmentedButton(
+                shape = SegmentedButtonDefaults.itemShape(index, levels.lastIndex),
+                onClick = { if (enabled) onSelect(level) },
+                selected = level == selected,
+                enabled = enabled,
+                modifier = Modifier.weight(1f)
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = level.title),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = stringResource(id = level.description),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
     }
 }
 
