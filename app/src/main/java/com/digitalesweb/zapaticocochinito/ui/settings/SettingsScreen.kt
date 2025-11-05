@@ -24,13 +24,13 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Bolt
 import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Psychology
-import androidx.compose.material.icons.rounded.VolumeUp
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -109,7 +109,7 @@ fun SettingsScreen(
             ) {
                 IconButton(onClick = onBack) {
                     Icon(
-                        imageVector = Icons.Outlined.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                         contentDescription = stringResource(id = R.string.settings_back)
                     )
                 }
@@ -149,7 +149,7 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.VolumeUp,
+                        imageVector = Icons.AutoMirrored.Rounded.VolumeUp,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(32.dp)
@@ -404,7 +404,7 @@ private fun DifficultyTutorialDialog(onDismiss: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 LinearProgressIndicator(
-                    progress = progress,
+                    progress = { progress },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Text(

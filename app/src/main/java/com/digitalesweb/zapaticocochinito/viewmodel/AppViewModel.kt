@@ -53,9 +53,9 @@ class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel
     }
 
     fun updateLanguage(language: AppLanguage) {
-        AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language.tag))
         viewModelScope.launch {
             repository.updateLanguage(language)
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(language.tag))
         }
     }
 
