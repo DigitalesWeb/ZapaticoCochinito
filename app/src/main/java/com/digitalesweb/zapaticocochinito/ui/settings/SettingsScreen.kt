@@ -82,9 +82,34 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     var showDifficultyTutorial by rememberSaveable { mutableStateOf(false) }
+    var languageSelectionAlert by rememberSaveable { mutableStateOf<AppLanguage?>(null) }
 
     if (showDifficultyTutorial) {
         DifficultyTutorialDialog(onDismiss = { showDifficultyTutorial = false })
+    }
+
+    languageSelectionAlert?.let { pendingLanguage ->
+        AlertDialog(
+            onDismissRequest = { languageSelectionAlert = null },
+            title = {
+                Text(text = stringResource(id = R.string.settings_language_alert_title))
+            },
+            text = {
+                val languageName = stringResource(id = pendingLanguage.label)
+                Text(
+                    text = stringResource(
+                        id = R.string.settings_language_alert_message,
+                        languageName,
+                        pendingLanguage.resourceFilePath
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { languageSelectionAlert = null }) {
+                    Text(text = stringResource(id = R.string.settings_language_alert_confirm))
+                }
+            }
+        )
     }
 
     Column(
@@ -234,7 +259,13 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
-                LanguageSelector(selected = settings.language, onSelect = onLanguageChange)
+                LanguageSelector(
+                    selected = settings.language,
+                    onSelect = { language ->
+                        languageSelectionAlert = language
+                        onLanguageChange(language)
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(

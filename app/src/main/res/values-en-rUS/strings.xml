@@ -66,6 +66,9 @@
     <string name="settings_language_label">App language</string>
     <string name="language_spanish_label">🇲🇽 Spanish (LatAm)</string>
     <string name="language_english_label">🇺🇸 English</string>
+    <string name="settings_language_alert_title">Language updated</string>
+    <string name="settings_language_alert_message">You selected "%1$s".\nResource file: %2$s</string>
+    <string name="settings_language_alert_confirm">OK</string>
 
     <string name="settings_record_label">Record</string>
     <plurals name="settings_record_points">
