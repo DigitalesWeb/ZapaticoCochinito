@@ -1,6 +1,7 @@
 package com.digitalesweb.zapaticocochinito.data
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
@@ -22,6 +23,8 @@ private const val DATASTORE_NAME = "zapatico_settings"
 private val Context.dataStore by preferencesDataStore(name = DATASTORE_NAME)
 
 class AppPreferencesRepository(private val context: Context) {
+
+    private val logTag = "AppPreferencesRepo"
 
     val settingsFlow: Flow<AppSettings> = context.dataStore.data
         .catch { exception ->
@@ -84,6 +87,7 @@ class AppPreferencesRepository(private val context: Context) {
         context.dataStore.edit { preferences ->
             preferences[LANGUAGE_KEY] = language.tag
         }
+        Log.d(logTag, "Idioma guardado en DataStore: ${'$'}{language.tag}")
     }
 
     suspend fun updateHighScore(score: Int) {
