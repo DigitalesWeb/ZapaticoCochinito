@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ZapaticoCochinito">
         <meta-data
+            android:name="localeConfig"
+            android:resource="@xml/locales_config" />
+        <meta-data
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/games_app_id" />
         <meta-data
