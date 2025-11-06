@@ -94,6 +94,10 @@
         <item quantity="other">%1$d puntos</item>
     </plurals>
 
+    <string name="settings_rate_title">Califica Zapatico Cochinito</string>
+    <string name="settings_rate_description">Comparte tu experiencia en Play Store y ayuda a más personas a encontrar el juego.</string>
+    <string name="settings_rate_button">Calificar en Play Store</string>
+
     <string name="notifications_title">Novedades destacadas</string>
     <string name="notifications_body">Esto es lo que estamos preparando para los próximos días.</string>
     <string name="notifications_share_hint">Invita a tus amigos y compara puntuaciones en tiempo real.</string>

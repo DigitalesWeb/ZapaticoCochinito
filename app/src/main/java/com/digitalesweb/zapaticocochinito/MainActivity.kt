@@ -98,6 +98,10 @@ class MainActivity : ComponentActivity() {
                     onBestScoreUpdated = { score -> playGamesService.submitBestScore(score) },
                     onCambiaChaosChange = appViewModel::updateCambiaChaos,
                     onShowLeaderboard = { playGamesService.showLeaderboard() },
+                    onRateApp = {
+                        appViewModel.disableReviewPrompt()
+                        openPlayStoreReview()
+                    },
                     onReviewLater = appViewModel::remindReviewLater,
                     onReviewDeclined = appViewModel::disableReviewPrompt,
                     onReviewAccepted = {
@@ -133,6 +137,7 @@ private fun ZapaticoApp(
     onBestScoreUpdated: (Int) -> Unit,
     onCambiaChaosChange: (com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel) -> Unit,
     onShowLeaderboard: () -> Unit,
+    onRateApp: () -> Unit,
     onReviewLater: () -> Unit,
     onReviewDeclined: () -> Unit,
     onReviewAccepted: () -> Unit
@@ -254,6 +259,7 @@ private fun ZapaticoApp(
                     onThemeChange = onThemeChange,
                     onLanguageChange = onLanguageChange,
                     onCambiaChaosChange = onCambiaChaosChange,
+                    onRateApp = onRateApp,
                     onBack = { navController.popBackStack() }
                 )
             }

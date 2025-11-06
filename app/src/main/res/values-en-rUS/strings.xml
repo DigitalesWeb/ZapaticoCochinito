@@ -94,6 +94,10 @@
         <item quantity="other">%1$d points</item>
     </plurals>
 
+    <string name="settings_rate_title">Rate Zapatico Cochinito</string>
+    <string name="settings_rate_description">Share your experience on the Play Store and help more players find the game.</string>
+    <string name="settings_rate_button">Rate on Play Store</string>
+
     <string name="notifications_title">Highlights</string>
     <string name="notifications_body">Here is what we are lining up for the next updates.</string>
     <string name="notifications_share_hint">Invite your friends and compare scores in real time.</string>
