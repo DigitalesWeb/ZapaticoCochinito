@@ -38,6 +38,12 @@
     <string name="game_over_home">Back to Home</string>
     <string name="game_over_leaderboard">View leaderboard</string>
 
+    <string name="review_prompt_title">Do you enjoy Zapatico Cochinito?</string>
+    <string name="review_prompt_message">Share your thoughts with a Play Store review.</string>
+    <string name="review_prompt_later">Remind me later</string>
+    <string name="review_prompt_no">No</string>
+    <string name="review_prompt_yes">Yes</string>
+
     <string name="settings_title">Settings</string>
     <string name="settings_difficulty_label">Difficulty</string>
     <string name="settings_difficulty_tutorial_button">Take the guided tour</string>

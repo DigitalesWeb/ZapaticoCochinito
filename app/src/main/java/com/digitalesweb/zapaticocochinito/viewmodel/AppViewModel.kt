@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel() {
 
@@ -22,9 +23,10 @@ class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel
 
     val uiState = combine(
         repository.settingsFlow,
-        repository.highScoreFlow
-    ) { settings, highScore ->
-        AppUiState(settings = settings, bestScore = highScore)
+        repository.highScoreFlow,
+        repository.ratingPromptFlow
+    ) { settings, highScore, ratingPrompt ->
+        AppUiState(settings = settings, bestScore = highScore, ratingPrompt = ratingPrompt)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -71,6 +73,19 @@ class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel
         }
     }
 
+    fun disableReviewPrompt() {
+        viewModelScope.launch {
+            repository.disableReviewPrompt()
+        }
+    }
+
+    fun remindReviewLater() {
+        viewModelScope.launch {
+            val remindAfterMillis = System.currentTimeMillis() + TEN_DAYS_MILLIS
+            repository.scheduleReviewReminder(remindAfterMillis)
+        }
+    }
+
     class Factory(private val repository: AppPreferencesRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -79,5 +94,9 @@ class AppViewModel(private val repository: AppPreferencesRepository) : ViewModel
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
+    }
+
+    companion object {
+        private val TEN_DAYS_MILLIS = TimeUnit.DAYS.toMillis(10)
     }
 }
