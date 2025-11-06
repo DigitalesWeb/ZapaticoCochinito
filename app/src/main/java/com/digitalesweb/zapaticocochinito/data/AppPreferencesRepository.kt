@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.digitalesweb.zapaticocochinito.model.AppLanguage
@@ -14,6 +15,7 @@ import com.digitalesweb.zapaticocochinito.model.AppSettings
 import com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel
 import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Difficulty
+import com.digitalesweb.zapaticocochinito.model.RatingPromptState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
@@ -62,6 +64,21 @@ class AppPreferencesRepository(private val context: Context) {
             preferences[HIGH_SCORE_KEY] ?: 0
         }
 
+    val ratingPromptFlow: Flow<RatingPromptState> = context.dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences ->
+            RatingPromptState(
+                disabled = preferences[RATING_DISABLED_KEY] ?: false,
+                remindAfterMillis = preferences[RATING_REMIND_AFTER_KEY] ?: 0L
+            )
+        }
+
     suspend fun updateDifficulty(difficulty: Difficulty) {
         context.dataStore.edit { preferences ->
             preferences[DIFFICULTY_KEY] = difficulty.name
@@ -108,6 +125,19 @@ class AppPreferencesRepository(private val context: Context) {
         }
     }
 
+    suspend fun disableReviewPrompt() {
+        context.dataStore.edit { preferences ->
+            preferences[RATING_DISABLED_KEY] = true
+        }
+    }
+
+    suspend fun scheduleReviewReminder(remindAfterMillis: Long) {
+        context.dataStore.edit { preferences ->
+            preferences[RATING_DISABLED_KEY] = false
+            preferences[RATING_REMIND_AFTER_KEY] = remindAfterMillis
+        }
+    }
+
     private companion object {
         val DIFFICULTY_KEY = stringPreferencesKey("difficulty")
         val VOLUME_KEY = floatPreferencesKey("volume")
@@ -116,6 +146,8 @@ class AppPreferencesRepository(private val context: Context) {
         val LANGUAGE_KEY = stringPreferencesKey("language")
         val HIGH_SCORE_KEY = intPreferencesKey("high_score")
         val CAMBIA_CHAOS_KEY = stringPreferencesKey("cambia_chaos")
+        val RATING_DISABLED_KEY = booleanPreferencesKey("rating_disabled")
+        val RATING_REMIND_AFTER_KEY = longPreferencesKey("rating_remind_after")
 
         fun emptyPreferences(): Preferences = androidx.datastore.preferences.core.emptyPreferences()
     }

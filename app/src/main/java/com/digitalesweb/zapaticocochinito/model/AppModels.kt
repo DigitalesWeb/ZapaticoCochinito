@@ -141,7 +141,15 @@ data class GameUiState(
     }
 }
 
+data class RatingPromptState(
+    val disabled: Boolean = false,
+    val remindAfterMillis: Long = 0L
+) {
+    fun canShow(nowMillis: Long): Boolean = !disabled && nowMillis >= remindAfterMillis
+}
+
 data class AppUiState(
     val settings: AppSettings = AppSettings(),
-    val bestScore: Int = 0
+    val bestScore: Int = 0,
+    val ratingPrompt: RatingPromptState = RatingPromptState()
 )

@@ -1,5 +1,8 @@
 package com.digitalesweb.zapaticocochinito
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -19,6 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,6 +42,7 @@ import com.digitalesweb.zapaticocochinito.model.AppTheme
 import com.digitalesweb.zapaticocochinito.model.Foot
 import com.digitalesweb.zapaticocochinito.ui.game.GameOverScreen
 import com.digitalesweb.zapaticocochinito.ui.game.GameScreen
+import com.digitalesweb.zapaticocochinito.ui.game.ReviewPromptDialog
 import com.digitalesweb.zapaticocochinito.ui.home.HomeScreen
 import com.digitalesweb.zapaticocochinito.ui.navigation.ZapaticoRoutes
 import com.digitalesweb.zapaticocochinito.ui.navigation.bottomDestinations
@@ -90,7 +97,13 @@ class MainActivity : ComponentActivity() {
                     onResetGameState = { gameViewModel.resetGame() },
                     onBestScoreUpdated = { score -> playGamesService.submitBestScore(score) },
                     onCambiaChaosChange = appViewModel::updateCambiaChaos,
-                    onShowLeaderboard = { playGamesService.showLeaderboard() }
+                    onShowLeaderboard = { playGamesService.showLeaderboard() },
+                    onReviewLater = appViewModel::remindReviewLater,
+                    onReviewDeclined = appViewModel::disableReviewPrompt,
+                    onReviewAccepted = {
+                        appViewModel.disableReviewPrompt()
+                        openPlayStoreReview()
+                    }
                 )
             }
         }
@@ -119,11 +132,17 @@ private fun ZapaticoApp(
     onResetGameState: () -> Unit,
     onBestScoreUpdated: (Int) -> Unit,
     onCambiaChaosChange: (com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel) -> Unit,
-    onShowLeaderboard: () -> Unit
+    onShowLeaderboard: () -> Unit,
+    onReviewLater: () -> Unit,
+    onReviewDeclined: () -> Unit,
+    onReviewAccepted: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+
+    var showReviewPrompt by remember { mutableStateOf(false) }
+    var lastPromptEventId by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(gameState.gameOverEventId) {
         if (gameState.isGameOver) {
@@ -136,6 +155,25 @@ private fun ZapaticoApp(
     LaunchedEffect(gameState.bestScore) {
         if (gameState.bestScore > 0) {
             onBestScoreUpdated(gameState.bestScore)
+        }
+    }
+
+    LaunchedEffect(gameState.gameOverEventId, appState.ratingPrompt, gameState.isGameOver) {
+        val eventId = gameState.gameOverEventId
+        val shouldShow = gameState.isGameOver &&
+            gameState.lastScore > REVIEW_SCORE_THRESHOLD &&
+            appState.ratingPrompt.canShow(System.currentTimeMillis())
+
+        if (shouldShow) {
+            if (lastPromptEventId != eventId) {
+                showReviewPrompt = true
+                lastPromptEventId = eventId
+            }
+        } else {
+            showReviewPrompt = false
+            if (!gameState.isGameOver) {
+                lastPromptEventId = null
+            }
         }
     }
 
@@ -237,5 +275,43 @@ private fun ZapaticoApp(
                 )
             }
         }
+
+        if (showReviewPrompt) {
+            val currentEventId = gameState.gameOverEventId
+            ReviewPromptDialog(
+                onRemindLater = {
+                    showReviewPrompt = false
+                    lastPromptEventId = currentEventId
+                    onReviewLater()
+                },
+                onReject = {
+                    showReviewPrompt = false
+                    lastPromptEventId = currentEventId
+                    onReviewDeclined()
+                },
+                onAccept = {
+                    showReviewPrompt = false
+                    lastPromptEventId = currentEventId
+                    onReviewAccepted()
+                }
+            )
+        }
     }
 }
+
+private fun MainActivity.openPlayStoreReview() {
+    val appPackage = packageName
+    val reviewUri = Uri.parse("market://details?id=$appPackage")
+    val reviewIntent = Intent(Intent.ACTION_VIEW, reviewUri).apply {
+        addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_NEW_DOCUMENT or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+    }
+    try {
+        startActivity(reviewIntent)
+    } catch (exception: ActivityNotFoundException) {
+        val webUri = Uri.parse("https://play.google.com/store/apps/details?id=$appPackage")
+        val webIntent = Intent(Intent.ACTION_VIEW, webUri)
+        startActivity(webIntent)
+    }
+}
+
+private const val REVIEW_SCORE_THRESHOLD = 50

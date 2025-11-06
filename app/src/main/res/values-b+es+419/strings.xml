@@ -38,6 +38,12 @@
     <string name="game_over_home">Volver al Inicio</string>
     <string name="game_over_leaderboard">Revisar marcador</string>
 
+    <string name="review_prompt_title">¿Te gusta Zapatico Cochinito?</string>
+    <string name="review_prompt_message">Cuéntanos qué te pareció dejando una reseña en Play Store.</string>
+    <string name="review_prompt_later">Recordarme más tarde</string>
+    <string name="review_prompt_no">No</string>
+    <string name="review_prompt_yes">Sí</string>
+
     <string name="settings_title">Configuración</string>
     <string name="settings_difficulty_label">Dificultad</string>
     <string name="settings_difficulty_tutorial_button">Ver tour guiado</string>
