@@ -3,7 +3,6 @@ package com.digitalesweb.zapaticocochinito.ui.game
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.weight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -53,11 +52,13 @@ fun ReviewPromptDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TextButton(onClick = onReject, modifier = Modifier.weight(1f)) {
-                    Text(text = stringResource(id = R.string.review_prompt_no))
+                TextButton(onClick = onReject) {
+                    Text(text = stringResource(id = R.string.review_prompt_no)
+                        , modifier = Modifier.weight(1f))
                 }
-                Button(onClick = onAccept, modifier = Modifier.weight(1f)) {
-                    Text(text = stringResource(id = R.string.review_prompt_yes))
+                Button(onClick = onAccept) {
+                    Text(text = stringResource(id = R.string.review_prompt_yes)
+                        , modifier = Modifier.weight(1f))
                 }
             }
         }
