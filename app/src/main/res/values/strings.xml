@@ -5,6 +5,10 @@
     <string name="play_games_sign_in_success">Sesión iniciada en Google Play Juegos</string>
     <string name="play_games_sign_in_failed">No se pudo iniciar sesión en Google Play Juegos</string>
     <string name="play_games_leaderboard_unavailable">El marcador todavía no está disponible</string>
+    <string name="play_games_sign_in_required_title">Conéctate a Google Play Juegos</string>
+    <string name="play_games_sign_in_required_message">Para aparecer en el ranking mundial necesitas una cuenta de Google asociada. ¿Quieres iniciar sesión o crear una ahora?</string>
+    <string name="play_games_sign_in_required_positive">Sí, conectar</string>
+    <string name="play_games_sign_in_required_negative">No por ahora</string>
     <string name="home_description">Un minijuego rítmico para coordinar tus pies al ritmo del clásico “Zapatico Cochinito”. ¡Cuidado cuando diga CAMBIA!</string>
     <string name="home_play">Jugar</string>
     <string name="home_settings">Configuración</string>

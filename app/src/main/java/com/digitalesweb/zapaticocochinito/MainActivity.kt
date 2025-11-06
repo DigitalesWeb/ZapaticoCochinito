@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -52,10 +54,12 @@ import com.digitalesweb.zapaticocochinito.ui.theme.ZapaticoCochinitoTheme
 import com.digitalesweb.zapaticocochinito.util.applyAppLocales
 import com.digitalesweb.zapaticocochinito.viewmodel.AppViewModel
 import com.digitalesweb.zapaticocochinito.viewmodel.GameViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var playGamesService: PlayGamesService
+    private val showPlayGamesPrompt = MutableStateFlow(false)
 
     private val logTag = "MainActivity"
 
@@ -69,6 +73,7 @@ class MainActivity : ComponentActivity() {
             val appState by appViewModel.uiState.collectAsStateWithLifecycle()
             val gameViewModel: GameViewModel = viewModel(factory = GameViewModel.Factory(repository))
             val gameState by gameViewModel.uiState.collectAsStateWithLifecycle()
+            val shouldShowPlayGamesPrompt by showPlayGamesPrompt.collectAsStateWithLifecycle()
 
             LaunchedEffect(appState.settings) {
                 gameViewModel.applySettings(appState.settings)
@@ -109,13 +114,27 @@ class MainActivity : ComponentActivity() {
                         openPlayStoreReview()
                     }
                 )
+
+                if (shouldShowPlayGamesPrompt) {
+                    PlayGamesSignInDialog(
+                        onConfirm = {
+                            showPlayGamesPrompt.value = false
+                            playGamesService.requestUserSignIn()
+                        },
+                        onDismiss = {
+                            showPlayGamesPrompt.value = false
+                        }
+                    )
+                }
             }
         }
     }
 
     override fun onStart() {
         super.onStart()
-        playGamesService.signInIfNeeded()
+        playGamesService.signInIfNeeded(
+            onSignInRequired = { showPlayGamesPrompt.value = true }
+        )
     }
 }
 
@@ -303,6 +322,28 @@ private fun ZapaticoApp(
             )
         }
     }
+}
+
+@Composable
+private fun PlayGamesSignInDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.play_games_sign_in_required_title)) },
+        text = { Text(text = stringResource(R.string.play_games_sign_in_required_message)) },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(R.string.play_games_sign_in_required_positive))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.play_games_sign_in_required_negative))
+            }
+        }
+    )
 }
 
 private fun MainActivity.openPlayStoreReview() {

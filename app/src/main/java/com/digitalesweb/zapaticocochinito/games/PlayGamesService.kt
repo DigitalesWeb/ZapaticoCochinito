@@ -17,7 +17,7 @@ class PlayGamesService(private val activity: ComponentActivity) {
         PlayGamesSdk.initialize(activity)
     }
 
-    fun signInIfNeeded() {
+    fun signInIfNeeded(onSignInRequired: () -> Unit) {
         if (hasTriedSignIn) return
         hasTriedSignIn = true
 
@@ -27,14 +27,21 @@ class PlayGamesService(private val activity: ComponentActivity) {
             if (isAuthenticated) {
                 notifySignInSuccess()
             } else {
-                signInClient.signIn().addOnCompleteListener(activity) { signInTask ->
-                    if (signInTask.isSuccessful && signInTask.result?.isAuthenticated == true) {
-                        notifySignInSuccess()
-                    } else {
-                        Log.w(TAG, "Google Play Juegos: error al iniciar sesión", signInTask.exception)
-                        Toast.makeText(activity, R.string.play_games_sign_in_failed, Toast.LENGTH_LONG).show()
-                    }
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Google Play Juegos: error al verificar autenticación", task.exception)
                 }
+                onSignInRequired()
+            }
+        }
+    }
+
+    fun requestUserSignIn() {
+        signInClient.signIn().addOnCompleteListener(activity) { signInTask ->
+            if (signInTask.isSuccessful && signInTask.result?.isAuthenticated == true) {
+                notifySignInSuccess()
+            } else {
+                Log.w(TAG, "Google Play Juegos: error al iniciar sesión", signInTask.exception)
+                Toast.makeText(activity, R.string.play_games_sign_in_failed, Toast.LENGTH_LONG).show()
             }
         }
     }
