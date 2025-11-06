@@ -52,13 +52,17 @@ fun ReviewPromptDialog(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TextButton(onClick = onReject) {
-                    Text(text = stringResource(id = R.string.review_prompt_no)
-                        , modifier = Modifier.weight(1f))
+                TextButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onReject
+                ) {
+                    Text(text = stringResource(id = R.string.review_prompt_no))
                 }
-                Button(onClick = onAccept) {
-                    Text(text = stringResource(id = R.string.review_prompt_yes)
-                        , modifier = Modifier.weight(1f))
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = onAccept
+                ) {
+                    Text(text = stringResource(id = R.string.review_prompt_yes))
                 }
             }
         }
