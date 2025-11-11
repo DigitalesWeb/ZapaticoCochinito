@@ -9,6 +9,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +42,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -54,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.digitalesweb.zapaticocochinito.R
 import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
@@ -61,6 +65,8 @@ fun HomeScreen(
     onPlay: () -> Unit,
     onOpenSettings: () -> Unit,
     onShowLeaderboard: () -> Unit,
+    metronomeEnabled: Boolean,
+    volume: Float,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -84,7 +90,9 @@ fun HomeScreen(
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         RhythmicHomeIcon(
-            modifier = Modifier.size(96.dp)
+            modifier = Modifier.size(96.dp),
+            metronomeEnabled = metronomeEnabled,
+            volume = volume
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
@@ -166,7 +174,11 @@ fun HomeScreen(
 }
 
 @Composable
-private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
+private fun RhythmicHomeIcon(
+    modifier: Modifier = Modifier,
+    metronomeEnabled: Boolean,
+    volume: Float
+) {
     val infiniteTransition = rememberInfiniteTransition(label = "homeIconPulse")
     val scale by infiniteTransition.animateFloat(
         initialValue = 0.9f,
@@ -178,16 +190,35 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
         label = "homeIconScale"
     )
 
-    val toneGenerator = remember { ToneGenerator(AudioManager.STREAM_NOTIFICATION, 40) }
-
-    DisposableEffect(toneGenerator) {
-        onDispose { toneGenerator.release() }
+    val toneGenerator = remember(metronomeEnabled, volume) {
+        if (!metronomeEnabled) {
+            null
+        } else {
+            val volumeLevel = (volume * 100).roundToInt().coerceIn(0, 100)
+            if (volumeLevel == 0) {
+                null
+            } else {
+                try {
+                    ToneGenerator(AudioManager.STREAM_MUSIC, volumeLevel)
+                } catch (_: Throwable) {
+                    null
+                }
+            }
+        }
     }
 
-    LaunchedEffect(Unit) {
-        repeat(PREVIEW_TONE_PULSES) {
-            toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 120)
-            delay(PREVIEW_TONE_INTERVAL_MS)
+    DisposableEffect(toneGenerator) {
+        onDispose { toneGenerator?.release() }
+    }
+
+    var previewRequest by remember { mutableStateOf(0) }
+
+    LaunchedEffect(previewRequest, toneGenerator) {
+        if (previewRequest > 0 && toneGenerator != null) {
+            repeat(PREVIEW_TONE_PULSES) {
+                toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, PREVIEW_TONE_DURATION_MS)
+                delay(PREVIEW_TONE_INTERVAL_MS)
+            }
         }
     }
 
@@ -196,10 +227,14 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
         .filter { it.isNotBlank() }
 
     Row(
-        modifier = modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        },
+        modifier = modifier
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .clickable(enabled = toneGenerator != null) {
+                previewRequest++
+            },
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -213,6 +248,7 @@ private fun RhythmicHomeIcon(modifier: Modifier = Modifier) {
 }
 
 private const val PREVIEW_TONE_PULSES = 6
+private const val PREVIEW_TONE_DURATION_MS = 120
 private const val PREVIEW_TONE_INTERVAL_MS = 500L
 
 @Composable

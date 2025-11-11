@@ -252,7 +252,9 @@ private fun ZapaticoApp(
                     onOpenSettings = {
                         navController.navigate(ZapaticoRoutes.SETTINGS)
                     },
-                    onShowLeaderboard = onShowLeaderboard
+                    onShowLeaderboard = onShowLeaderboard,
+                    metronomeEnabled = appState.settings.metronomeEnabled,
+                    volume = appState.settings.volume
                 )
             }
             composable(ZapaticoRoutes.GAME) {
