@@ -92,13 +92,18 @@ fun GameScreen(
 
     val toneGenerator = remember(uiState.volume, uiState.metronomeEnabled) {
         if (uiState.metronomeEnabled) {
-            try {
-                ToneGenerator(
-                    AudioManager.STREAM_MUSIC,
-                    (uiState.volume * 100).roundToInt().coerceIn(10, 100)
-                )
-            } catch (_: Throwable) {
+            val volumeLevel = (uiState.volume * 100).roundToInt().coerceIn(0, 100)
+            if (volumeLevel == 0) {
                 null
+            } else {
+                try {
+                    ToneGenerator(
+                        AudioManager.STREAM_MUSIC,
+                        volumeLevel
+                    )
+                } catch (_: Throwable) {
+                    null
+                }
             }
         } else {
             null
