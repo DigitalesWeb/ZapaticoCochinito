@@ -77,6 +77,16 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
         }
     }
 
+    fun resumeGame() {
+        mutableState.update {
+            if (it.isGameOver) {
+                it
+            } else {
+                it.copy(isRunning = true)
+            }
+        }
+    }
+
     fun resetGame() {
         beatsSinceLastCambia = 0
         invertBeatsRemaining = 0

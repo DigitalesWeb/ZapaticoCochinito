@@ -2,7 +2,7 @@ package com.digitalesweb.zapaticocochinito.ui.game
 
 import android.media.AudioManager
 import android.media.ToneGenerator
-import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -25,18 +25,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -67,6 +72,7 @@ fun GameScreen(
     onBeat: () -> Unit,
     onFootPressed: (Foot) -> Unit,
     onPause: () -> Unit,
+    onResume: () -> Unit,
     onExit: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -142,13 +148,51 @@ fun GameScreen(
     }
 
     val haptic = LocalHapticFeedback.current
-    val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    var showExitDialog by rememberSaveable { mutableStateOf(false) }
+    var resumeAfterDialog by rememberSaveable { mutableStateOf(false) }
     val showStartCard = !uiState.isRunning && !uiState.isGameOver
 
-//    BackHandler {
-//        onPause()
-//        onExit()
-//    }
+    val requestExit: () -> Unit = {
+        if (uiState.isRunning && !uiState.isGameOver) {
+            if (!showExitDialog) {
+                resumeAfterDialog = true
+                onPause()
+                showExitDialog = true
+            }
+        } else {
+            onExit()
+        }
+    }
+
+    val closeExitDialog: () -> Unit = {
+        val shouldResume = resumeAfterDialog
+        showExitDialog = false
+        resumeAfterDialog = false
+        if (shouldResume) {
+            onResume()
+        }
+    }
+
+    val confirmExit: () -> Unit = {
+        showExitDialog = false
+        resumeAfterDialog = false
+        onExit()
+    }
+
+    BackHandler {
+        if (showExitDialog) {
+            closeExitDialog()
+        } else {
+            requestExit()
+        }
+    }
+
+    if (showExitDialog) {
+        ExitConfirmationDialog(
+            onConfirm = confirmExit,
+            onDismiss = closeExitDialog
+        )
+    }
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -165,11 +209,7 @@ fun GameScreen(
             GameTopBar(
                 lives = uiState.lives,
                 score = uiState.score,
-                onExit = {
-                    onPause()
-                    onExit()
-                    //backDispatcher?.onBackPressed()
-                }
+                onExit = requestExit
             )
             Spacer(modifier = Modifier.height(32.dp))
             Box(
@@ -234,6 +274,29 @@ private fun GameTopBar(lives: Int, score: Int, onExit: () -> Unit, modifier: Mod
         LivesIndicator(lives = lives)
         ScoreBadge(score = score)
     }
+}
+
+@Composable
+private fun ExitConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(id = R.string.game_exit_confirm_title))
+        },
+        text = {
+            Text(text = stringResource(id = R.string.game_exit_confirm_message))
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(text = stringResource(id = R.string.game_exit_confirm_confirm))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(id = R.string.game_exit_confirm_cancel))
+            }
+        }
+    )
 }
 
 @Composable
