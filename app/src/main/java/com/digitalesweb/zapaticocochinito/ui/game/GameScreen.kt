@@ -3,6 +3,10 @@ package com.digitalesweb.zapaticocochinito.ui.game
 import android.media.AudioManager
 import android.media.ToneGenerator
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -240,6 +244,7 @@ fun GameScreen(
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                         onFootPressed(Foot.Right)
                     },
+                    invertActive = uiState.invertActive,
                     modifier = Modifier.fillMaxWidth()
                 )
             } else {
@@ -426,28 +431,51 @@ private fun BpmBadge(bpm: Int, modifier: Modifier = Modifier) {
 private fun FootButtons(
     onLeft: () -> Unit,
     onRight: () -> Unit,
+    invertActive: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    AnimatedContent(
+        targetState = invertActive,
+        transitionSpec = {
+            fadeIn(animationSpec = tween(durationMillis = 200)) togetherWith
+                fadeOut(animationSpec = tween(durationMillis = 200))
+        },
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(18.dp)
-    ) {
-        FootButton(
-            label = stringResource(id = R.string.game_button_left),
-            emoji = "👈",
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            onClick = onLeft,
-            modifier = Modifier.weight(1f)
-        )
-        FootButton(
-            label = stringResource(id = R.string.game_button_right),
-            emoji = "👉",
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-            onClick = onRight,
-            modifier = Modifier.weight(1f)
-        )
+        label = "foot_buttons"
+    ) { inverted ->
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
+            val leftButton: @Composable () -> Unit = {
+                FootButton(
+                    label = stringResource(id = R.string.game_button_left),
+                    emoji = "👈",
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    onClick = onLeft,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            val rightButton: @Composable () -> Unit = {
+                FootButton(
+                    label = stringResource(id = R.string.game_button_right),
+                    emoji = "👉",
+                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                    onClick = onRight,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            if (inverted) {
+                rightButton()
+                leftButton()
+            } else {
+                leftButton()
+                rightButton()
+            }
+        }
     }
 }
 
