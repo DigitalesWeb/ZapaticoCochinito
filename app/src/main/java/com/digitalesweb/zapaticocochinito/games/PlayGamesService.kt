@@ -4,6 +4,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.digitalesweb.zapaticocochinito.R
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.games.GamesClientStatusCodes
 import com.google.android.gms.games.PlayGames
 import com.google.android.gms.games.PlayGamesSdk
 
@@ -56,7 +58,7 @@ class PlayGamesService(private val activity: ComponentActivity) {
         leaderboardsClient.submitScore(leaderboardId, score.toLong())
     }
 
-    fun showLeaderboard() {
+    fun showLeaderboard(onSignInRequired: () -> Unit = {}) {
         val leaderboardId = activity.getString(R.string.leaderboard_high_score_id)
         if (leaderboardId.isBlank() || leaderboardId.startsWith("REEMPLAZA")) {
             Toast.makeText(activity, R.string.play_games_leaderboard_unavailable, Toast.LENGTH_SHORT).show()
@@ -67,8 +69,14 @@ class PlayGamesService(private val activity: ComponentActivity) {
                 activity.startActivity(intent)
             }
             .addOnFailureListener(activity) { error ->
-                Log.w(TAG, "No se pudo abrir el leaderboard", error)
-                Toast.makeText(activity, R.string.play_games_leaderboard_unavailable, Toast.LENGTH_SHORT).show()
+                val statusCode = (error as? ApiException)?.statusCode
+                if (statusCode == GamesClientStatusCodes.SIGN_IN_REQUIRED) {
+                    Log.i(TAG, "El usuario necesita iniciar sesión para abrir el leaderboard")
+                    onSignInRequired()
+                } else {
+                    Log.w(TAG, "No se pudo abrir el leaderboard", error)
+                    Toast.makeText(activity, R.string.play_games_leaderboard_unavailable, Toast.LENGTH_SHORT).show()
+                }
             }
     }
 

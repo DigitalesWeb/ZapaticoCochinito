@@ -102,7 +102,11 @@ class MainActivity : ComponentActivity() {
                     onResetGameState = { gameViewModel.resetGame() },
                     onBestScoreUpdated = { score -> playGamesService.submitBestScore(score) },
                     onCambiaChaosChange = appViewModel::updateCambiaChaos,
-                    onShowLeaderboard = { playGamesService.showLeaderboard() },
+                    onShowLeaderboard = {
+                        playGamesService.showLeaderboard(
+                            onSignInRequired = { showPlayGamesPrompt.value = true }
+                        )
+                    },
                     onRateApp = {
                         appViewModel.disableReviewPrompt()
                         openPlayStoreReview()
