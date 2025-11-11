@@ -93,6 +93,7 @@ class MainActivity : ComponentActivity() {
                     onFootPressed = { foot -> gameViewModel.onFootPressed(foot) },
                     onBeat = { gameViewModel.onBeat() },
                     onPauseGame = { gameViewModel.stopGame() },
+                    onResumeGame = { gameViewModel.resumeGame() },
                     onDifficultyChange = appViewModel::updateDifficulty,
                     onVolumeChange = appViewModel::updateVolume,
                     onMetronomeToggle = appViewModel::updateMetronome,
@@ -150,6 +151,7 @@ private fun ZapaticoApp(
     onFootPressed: (Foot) -> Unit,
     onBeat: () -> Unit,
     onPauseGame: () -> Unit,
+    onResumeGame: () -> Unit,
     onDifficultyChange: (com.digitalesweb.zapaticocochinito.model.Difficulty) -> Unit,
     onVolumeChange: (Float) -> Unit,
     onMetronomeToggle: (Boolean) -> Unit,
@@ -264,6 +266,7 @@ private fun ZapaticoApp(
                     onBeat = onBeat,
                     onFootPressed = onFootPressed,
                     onPause = onPauseGame,
+                    onResume = onResumeGame,
                     onExit = {
                         onPauseGame()
                         navController.navigate(ZapaticoRoutes.HOME)
