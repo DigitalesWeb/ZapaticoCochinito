@@ -2,6 +2,17 @@
     <string name="app_name">Zapatico Cochinito</string>
     <string name="games_app_id">630863606670</string>
     <string name="leaderboard_high_score_id">Cgkljueak64SEAIQAQ</string>
+    <string name="achievement_id_primera_partida">REEMPLAZA_ACH_PRIMERA_PARTIDA</string>
+    <string name="achievement_id_score_50">REEMPLAZA_ACH_SCORE_50</string>
+    <string name="achievement_id_score_100">REEMPLAZA_ACH_SCORE_100</string>
+    <string name="achievement_id_racha_15">REEMPLAZA_ACH_RACHA_15</string>
+    <string name="achievement_id_cambia_aceptado">REEMPLAZA_ACH_CAMBIA_ACEPTADO</string>
+    <string name="achievement_id_pro_100">REEMPLAZA_ACH_PRO_100</string>
+    <string name="achievement_id_bpm_180">REEMPLAZA_ACH_BPM_180</string>
+    <string name="achievement_id_partidas_25">REEMPLAZA_ACH_PARTIDAS_25</string>
+    <string name="achievement_id_aciertos_200">REEMPLAZA_ACH_ACIERTOS_200</string>
+    <string name="achievement_id_cambia_50">REEMPLAZA_ACH_CAMBIA_50</string>
+    <string name="achievement_id_maestro_300">REEMPLAZA_ACH_MAESTRO_300</string>
     <string name="play_games_sign_in_success">Sesión iniciada en Google Play Juegos</string>
     <string name="play_games_sign_in_failed">No se pudo iniciar sesión en Google Play Juegos</string>
     <string name="play_games_leaderboard_unavailable">El marcador todavía no está disponible</string>
@@ -105,6 +116,7 @@
     <string name="settings_rate_title">Califica Zapatico Cochinito</string>
     <string name="settings_rate_description">Comparte tu experiencia en Play Store y ayuda a más personas a encontrar el juego.</string>
     <string name="settings_rate_button">Calificar en Play Store</string>
+    <string name="settings_app_version">Versión %1$s (%2$d)</string>
 
     <string name="notifications_title">Novedades destacadas</string>
     <string name="notifications_body">Esto es lo que estamos preparando para los próximos días.</string>

@@ -124,6 +124,64 @@ Hallazgo principal: la integracion de Google Play Games esta funcional en su cam
 
 ---
 
+## Play Games Sidekick (estado y habilitacion)
+
+### Estado actual frente a estandar oficial (actualizado 2026-03-20)
+
+- **Estado:** **parcial**.
+- **Cumple base tecnica de PGS v2 en app:** si (SDK v2, `APP_ID`, auth y leaderboard integrados).
+- **No se observa requisito clave de Sidekick para guideline Level Up 2026:** implementacion de **Achievements** (el proyecto hoy usa solo leaderboard).
+- **No hay API runtime especifica obligatoria de Sidekick en el cliente Android:** la habilitacion principal de overlay se hace desde **Play Console** sobre AABs.
+
+### Requisitos oficiales Sidekick (fuente Android Developers)
+
+- Sidekick se agrega a juegos mediante Play Console en release de testing/produccion; no se habilita por una API dedicada en el codigo del juego.
+- Requisitos de uso en dispositivo: Android 13+, juego instalado desde Play Store y usuario con Gamer Profile.
+- Para exponer el modulo de logros en Sidekick, el juego debe implementar Achievements de Play Games Services.
+- En testing, el toggle de Sidekick se activa desde Developer options de Play Store en el dispositivo tester.
+- Para cumplir guideline de Level Up (hito julio 2026), Google indica integrar Sidekick + Achievements.
+
+### Brecha detectada en este repositorio
+
+1. **Achievements no implementados en codigo**
+   - Evidencia: no hay uso de `AchievementsClient` ni llamadas de unlock/increment en `app/src/main/java/com/digitalesweb/zapaticocochinito/`.
+2. **No hay IDs de achievements en recursos**
+   - Evidencia: `app/src/main/res/values/strings.xml` solo define `games_app_id` y `leaderboard_high_score_id`.
+3. **Habilitacion Sidekick depende de consola/release, no verificable solo con codigo**
+   - Evidencia: no existen metadatos Android ni dependencia SDK especifica de Sidekick distinta de PGS v2.
+
+### Checklist operativo para habilitar Sidekick en produccion
+
+1. **Preparar base PGS (ya casi lista en este repo)**
+   - Confirmar `games_app_id` y leaderboard en resources + manifest.
+   - Mantener `play-services-games-v2` actualizado.
+
+2. **Agregar Achievements (pendiente en proyecto)**
+   - Crear achievements en Play Console (minimo set inicial).
+   - Publicarlos (no en draft) y mapear IDs en recursos Android.
+   - Implementar llamadas en app (`unlock`/`increment`) en hitos de juego.
+
+3. **Activar Sidekick en Play Console (obligatorio)**
+   - En release interna/cerrada, marcar **Add Play Games Sidekick to app bundles you upload**.
+   - Opcional recomendado: en **Testing > Advanced settings > Play Games Sidekick**, habilitar auto-add para nuevos AAB.
+
+4. **Validar en dispositivo tester**
+   - Instalar build desde Play Store (track de testing).
+   - Activar Play Store developer options (tap 7 veces en version) y encender toggle **Play Games Sidekick**.
+   - Verificar overlay en partida + seccion de achievements/beneficios.
+
+5. **Promocion a produccion**
+   - Promover release que ya incluye Sidekick.
+   - Confirmar que el checklist de UX Level Up quede cubierto (Sidekick + Achievements).
+
+### Riesgos y limitaciones
+
+- **Riesgo de cumplimiento:** sin Achievements, Sidekick queda limitado y no cubre completamente guideline Level Up.
+- **Riesgo de rollout:** si la instalacion no proviene de Play Store o el tester no activa toggle, no se vera overlay.
+- **Riesgo de seguridad/compatibilidad:** Sidekick introduce libs nativas adicionales; si hay anti-tamper externo, requiere prueba dedicada por variante.
+
+---
+
 ## Plan de mitigacion Play Games (diagnostico + acciones)
 
 ### Fase 1 - Quick wins (1-2 dias)
@@ -173,6 +231,54 @@ Hallazgo principal: la integracion de Google Play Games esta funcional en su cam
 1. Liga semanal online real (backend + temporadas).
 2. Cosmeticos/skins desbloqueables.
 3. Eventos en vivo y ranking por regiones.
+
+---
+
+## Migracion a iOS (evaluacion y plan accionable)
+
+### Enfoque recomendado y tradeoffs
+
+- **Recomendacion base: KMP + UI nativa (Compose en Android, SwiftUI en iOS).** Permite reutilizar logica de juego, reglas de dominio y parte de persistencia, manteniendo UX nativa y menor riesgo de performance para mecanicas ritmicas.
+- **Flutter (alternativa valida):** acelera salida multiplataforma con una sola UI y alto control visual; tradeoff: mayor costo de migracion inicial desde Compose, reescritura de UI completa y puente para servicios de plataforma.
+- **React Native (alternativa con menor recomendacion para este caso):** rapido para equipos JS/TS, pero en juego ritmico puede exigir modulos nativos para timing/haptics/audio preciso; aumenta complejidad de integracion.
+- **Nativo iOS puro (Swift/SwiftUI):** maxima calidad nativa y menor lock-in tecnologico, pero duplicacion de logica y mayor costo de mantenimiento evolutivo frente a Android.
+- **Criterio pragmatico de seleccion inicial:** si el objetivo es iOS sin comprometer sensacion de juego, priorizar KMP; si el objetivo es una experiencia UI 100% compartida con velocidad comercial, evaluar Flutter con POC tecnico previo.
+
+### Portabilidad: que se puede reutilizar y que no
+
+- **Altamente portable (capa dominio/datos):** reglas de BPM, scoring, vidas, eventos de CAMBIA, casos de uso y contratos de repositorio (si se desacoplan de Android).
+- **Portable con adaptacion:** persistencia actual basada en `DataStore` (migrable a `multiplatform-settings`, SQLDelight o wrapper expect/actual).
+- **No portable de forma directa:** UI Jetpack Compose, navegacion `NavHost`, ciclo de vida de `MainActivity`, haptics Android y componentes especificos de Play Services.
+- **Requiere reemplazo en iOS:** Google Play Games (leaderboard/auth) por Game Center (o proveedor cross-platform), review prompt de Play Store por `SKStoreReviewController`.
+- **Riesgo de acoplamiento actual:** `MainActivity` concentra integraciones; conviene extraer puertos de plataforma antes de migrar para evitar reescritura mezclada con deuda tecnica.
+
+### Roadmap de migracion por fases
+
+1. **Fase 0 - Descubrimiento (1-2 semanas):** inventario de dependencias Android-only, definicion de arquitectura objetivo (KMP/Flutter/RN/nativo) y POC de timing de input + audio + haptics en iOS.
+2. **Fase 1 - Desacople (1 sprint):** separar dominio de framework Android, crear interfaces de plataforma (auth, leaderboard, review, haptics, audio), mover logica de juego a modulo testeable.
+3. **Fase 2 - Nucleo compartido (1-2 sprints):** portar estado, reglas y persistencia a capa compartida; mantener Android funcionando como baseline de paridad funcional.
+4. **Fase 3 - Cliente iOS MVP (1-2 sprints):** implementar UI iOS y adaptadores de plataforma (Game Center, almacenamiento, review), enfocando Inicio/Juego/Game Over.
+5. **Fase 4 - Paridad y hardening (1 sprint):** test de latencia percibida, calibracion de dificultad, analitica comparada Android vs iOS, correcciones de UX y publicacion limitada (TestFlight).
+
+### Riesgos tecnicos y de producto
+
+- **Precision temporal:** diferencias de scheduler/audio/haptics entre plataformas pueden afectar la jugabilidad ritmica.
+- **Paridad de servicios:** no existe equivalencia 1:1 entre Play Games y Game Center (IDs, login UX, politicas), riesgo de experiencia inconsistente.
+- **Sobrecosto de mantenimiento:** durante transicion habra doble superficie (Android + iOS + capa compartida), con mayor costo de QA y release.
+- **Desalineacion de roadmap:** migrar temprano puede frenar features de retencion (desafio diario/misiones) si no se protege capacidad del equipo.
+- **Riesgo de producto:** sin validacion de demanda iOS, la migracion puede consumir sprint budget sin impacto proporcional en crecimiento.
+
+### Criterio de decision (cuando conviene migrar y cuando no)
+
+- **Conviene migrar ahora si:**
+  - iOS representa una oportunidad comercial validada (lista de espera, feedback de comunidad, objetivos de negocio claros).
+  - El equipo puede sostener 20-30% de capacidad extra temporal para paridad y QA multiplataforma.
+  - Se completa un POC con resultado aceptable de latencia, estabilidad y experiencia de leaderboard/login.
+- **Conviene postergar si:**
+  - Aun no estan estabilizados los fundamentos del loop actual (telemetria, robustez de auth, retencion D1/D7).
+  - No hay propietario tecnico claro de la arquitectura multiplataforma.
+  - El costo de oportunidad afecta hitos de producto de corto plazo con mayor ROI.
+- **Regla operativa sugerida:** iniciar migracion solo con gate de negocio + gate tecnico aprobados; si uno falla, mantener foco Android y reevaluar en 1-2 sprints.
 
 ---
 

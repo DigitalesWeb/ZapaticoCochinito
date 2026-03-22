@@ -2,6 +2,17 @@
     <string name="app_name">Zapatico Cochinito</string>
     <string name="games_app_id">630863606670</string>
     <string name="leaderboard_high_score_id">Cgkljueak64SEAIQAQ</string>
+    <string name="achievement_id_primera_partida">REEMPLAZA_ACH_PRIMERA_PARTIDA</string>
+    <string name="achievement_id_score_50">REEMPLAZA_ACH_SCORE_50</string>
+    <string name="achievement_id_score_100">REEMPLAZA_ACH_SCORE_100</string>
+    <string name="achievement_id_racha_15">REEMPLAZA_ACH_RACHA_15</string>
+    <string name="achievement_id_cambia_aceptado">REEMPLAZA_ACH_CAMBIA_ACEPTADO</string>
+    <string name="achievement_id_pro_100">REEMPLAZA_ACH_PRO_100</string>
+    <string name="achievement_id_bpm_180">REEMPLAZA_ACH_BPM_180</string>
+    <string name="achievement_id_partidas_25">REEMPLAZA_ACH_PARTIDAS_25</string>
+    <string name="achievement_id_aciertos_200">REEMPLAZA_ACH_ACIERTOS_200</string>
+    <string name="achievement_id_cambia_50">REEMPLAZA_ACH_CAMBIA_50</string>
+    <string name="achievement_id_maestro_300">REEMPLAZA_ACH_MAESTRO_300</string>
     <string name="play_games_sign_in_success">Signed in to Google Play Games</string>
     <string name="play_games_sign_in_failed">Unable to sign in to Google Play Games</string>
     <string name="play_games_leaderboard_unavailable">The leaderboard is not available yet</string>
@@ -97,6 +108,7 @@
     <string name="settings_rate_title">Rate Zapatico Cochinito</string>
     <string name="settings_rate_description">Share your experience on the Play Store and help more players find the game.</string>
     <string name="settings_rate_button">Rate on Play Store</string>
+    <string name="settings_app_version">Version %1$s (%2$d)</string>
 
     <string name="notifications_title">Highlights</string>
     <string name="notifications_body">Here is what we are lining up for the next updates.</string>

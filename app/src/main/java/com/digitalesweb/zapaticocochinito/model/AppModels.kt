@@ -21,7 +21,7 @@ data class AppSettings(
     }
 }
 
-enum class Difficulty(val bpm: Int, @StringRes val label: Int) {
+enum class Difficulty(val bpm: Int, @field:StringRes val label: Int) {
     Kid(70, R.string.difficulty_kid),
     Normal(90, R.string.difficulty_normal),
     Pro(120, R.string.difficulty_pro);
@@ -31,7 +31,7 @@ enum class Difficulty(val bpm: Int, @StringRes val label: Int) {
     }
 }
 
-enum class AppTheme(@StringRes val label: Int) {
+enum class AppTheme(@field:StringRes val label: Int) {
     Light(R.string.theme_light),
     Dark(R.string.theme_dark);
 
@@ -43,8 +43,8 @@ enum class AppTheme(@StringRes val label: Int) {
 enum class CambiaChaosLevel(
     val probabilityMultiplier: Float,
     val durationMultiplier: Float,
-    @StringRes val title: Int,
-    @StringRes val description: Int
+    @field:StringRes val title: Int,
+    @field:StringRes val description: Int
 ) {
     Relaxed(
         probabilityMultiplier = 0.6f,
@@ -72,7 +72,7 @@ enum class CambiaChaosLevel(
 
 enum class AppLanguage(
     val tag: String,
-    @StringRes val label: Int,
+    @field:StringRes val label: Int,
     val resourceQualifier: String,
     private val fallbacks: List<String> = emptyList()
 ) {
@@ -117,6 +117,43 @@ enum class GamePrompt {
     Left,
     Right
 }
+
+enum class AchievementKey {
+    ACH_PRIMERA_PARTIDA,
+    ACH_SCORE_50,
+    ACH_SCORE_100,
+    ACH_RACHA_15,
+    ACH_CAMBIA_ACEPTADO,
+    ACH_PRO_100,
+    ACH_BPM_180,
+    ACH_PARTIDAS_25,
+    ACH_ACIERTOS_200,
+    ACH_CAMBIA_50,
+    ACH_MAESTRO_300
+}
+
+sealed interface GameAchievementEvent {
+    data class Unlock(val achievement: AchievementKey) : GameAchievementEvent
+
+    data class Increment(
+        val achievement: AchievementKey,
+        val amount: Int = 1
+    ) : GameAchievementEvent
+}
+
+enum class PendingAchievementType {
+    Unlock,
+    IncrementTarget
+}
+
+data class PendingAchievementEntry(
+    val type: PendingAchievementType,
+    val achievement: AchievementKey,
+    val targetProgress: Int = 0,
+    val attemptCount: Int = 0,
+    val nextAttemptAtMillis: Long = 0L,
+    val createdAtMillis: Long = 0L
+)
 
 data class GameUiState(
     val currentPrompt: GamePrompt = GamePrompt.Left,

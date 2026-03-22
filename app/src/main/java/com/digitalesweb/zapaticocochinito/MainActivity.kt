@@ -38,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.digitalesweb.zapaticocochinito.di.ServiceLocator
+import com.digitalesweb.zapaticocochinito.games.AchievementsService
 import com.digitalesweb.zapaticocochinito.games.PlayGamesService
 import com.digitalesweb.zapaticocochinito.model.AppLanguage
 import com.digitalesweb.zapaticocochinito.model.AppTheme
@@ -55,10 +56,12 @@ import com.digitalesweb.zapaticocochinito.util.applyAppLocales
 import com.digitalesweb.zapaticocochinito.viewmodel.AppViewModel
 import com.digitalesweb.zapaticocochinito.viewmodel.GameViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var playGamesService: PlayGamesService
+    private lateinit var achievementsService: AchievementsService
     private val showPlayGamesPrompt = MutableStateFlow(false)
 
     private val logTag = "MainActivity"
@@ -68,6 +71,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         playGamesService = PlayGamesService(this)
         val repository = ServiceLocator.provideAppPreferencesRepository(this)
+        achievementsService = AchievementsService(this, repository)
         setContent {
             val appViewModel: AppViewModel = viewModel(factory = AppViewModel.Factory(repository))
             val appState by appViewModel.uiState.collectAsStateWithLifecycle()
@@ -83,6 +87,12 @@ class MainActivity : ComponentActivity() {
                 Log.d(logTag, "Reaplicando idioma desde ajustes: ${'$'}{appState.settings.language.tag}")
                 appState.settings.language.applyAppLocales(logTag)
                 Log.d(logTag, "Locales verificados en actividad")
+            }
+
+            LaunchedEffect(gameViewModel) {
+                gameViewModel.achievementEvents.collect { event ->
+                    achievementsService.submit(event)
+                }
             }
 
             ZapaticoCochinitoTheme(darkTheme = appState.settings.theme == AppTheme.Dark) {
@@ -108,6 +118,9 @@ class MainActivity : ComponentActivity() {
                             onSignInRequired = { showPlayGamesPrompt.value = true }
                         )
                     },
+                    onGameOverHandled = {
+                        achievementsService.flushPending("game_over")
+                    },
                     onRateApp = {
                         appViewModel.disableReviewPrompt()
                         openPlayStoreReview()
@@ -124,7 +137,9 @@ class MainActivity : ComponentActivity() {
                     PlayGamesSignInDialog(
                         onConfirm = {
                             showPlayGamesPrompt.value = false
-                            playGamesService.requestUserSignIn()
+                            playGamesService.requestUserSignIn {
+                                achievementsService.flushPending("post_sign_in")
+                            }
                         },
                         onDismiss = {
                             showPlayGamesPrompt.value = false
@@ -140,6 +155,7 @@ class MainActivity : ComponentActivity() {
         playGamesService.signInIfNeeded(
             onSignInRequired = { showPlayGamesPrompt.value = true }
         )
+        achievementsService.flushPending("on_start")
     }
 }
 
@@ -162,6 +178,7 @@ private fun ZapaticoApp(
     onBestScoreUpdated: (Int) -> Unit,
     onCambiaChaosChange: (com.digitalesweb.zapaticocochinito.model.CambiaChaosLevel) -> Unit,
     onShowLeaderboard: () -> Unit,
+    onGameOverHandled: () -> Unit,
     onRateApp: () -> Unit,
     onReviewLater: () -> Unit,
     onReviewDeclined: () -> Unit,
@@ -179,6 +196,12 @@ private fun ZapaticoApp(
             if (navController.currentDestination?.route != ZapaticoRoutes.GAME_OVER) {
                 navController.navigate(ZapaticoRoutes.GAME_OVER)
             }
+        }
+    }
+
+    LaunchedEffect(gameState.gameOverEventId, gameState.isGameOver) {
+        if (gameState.isGameOver) {
+            onGameOverHandled()
         }
     }
 

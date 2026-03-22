@@ -4,13 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.digitalesweb.zapaticocochinito.data.AppPreferencesRepository
+import com.digitalesweb.zapaticocochinito.model.AchievementKey
 import com.digitalesweb.zapaticocochinito.model.AppSettings
+import com.digitalesweb.zapaticocochinito.model.Difficulty
 import com.digitalesweb.zapaticocochinito.model.Foot
+import com.digitalesweb.zapaticocochinito.model.GameAchievementEvent
 import com.digitalesweb.zapaticocochinito.model.GamePrompt
 import com.digitalesweb.zapaticocochinito.model.GameUiState
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,11 +39,21 @@ class GameViewModel(
     private val mutableState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = mutableState.asStateFlow()
 
+    private val mutableAchievementEvents = MutableSharedFlow<GameAchievementEvent>(extraBufferCapacity = 32)
+    val achievementEvents: SharedFlow<GameAchievementEvent> = mutableAchievementEvents.asSharedFlow()
+
     private var currentSettings: AppSettings = AppSettings()
     private var beatsSinceLastCambia = 0
     private var invertBeatsRemaining = 0
     private var cambiaAnnounceBeats = 0
     private var hasPendingInput = false
+    private var currentStreak = 0
+    private var score50Unlocked = false
+    private var score100Unlocked = false
+    private var streak15Unlocked = false
+    private var pro100Unlocked = false
+    private var bpm180Unlocked = false
+    private var maestro300Unlocked = false
 
     init {
         viewModelScope.launch {
@@ -66,6 +82,8 @@ class GameViewModel(
         invertBeatsRemaining = 0
         cambiaAnnounceBeats = 0
         hasPendingInput = false
+        resetRunAchievementTrackers()
+        emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_PRIMERA_PARTIDA))
         mutableState.update {
             it.copy(
                 currentPrompt = GamePrompt.Left,
@@ -103,6 +121,7 @@ class GameViewModel(
         invertBeatsRemaining = 0
         cambiaAnnounceBeats = 0
         hasPendingInput = false
+        resetRunAchievementTrackers()
         mutableState.update {
             it.copy(
                 currentPrompt = GamePrompt.Left,
@@ -182,26 +201,40 @@ class GameViewModel(
 
         val wasCorrect = foot == state.expectedFoot
         if (wasCorrect) {
+            currentStreak++
+            emitAchievementEvent(GameAchievementEvent.Increment(AchievementKey.ACH_ACIERTOS_200))
+            if (state.invertActive) {
+                emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_CAMBIA_ACEPTADO))
+                emitAchievementEvent(GameAchievementEvent.Increment(AchievementKey.ACH_CAMBIA_50))
+            }
+
             val newScore = state.score + POINTS_PER_HIT
             val newBest = max(state.bestScore, newScore)
+            val newBpm = accelerateBpm(newScore)
+
             mutableState.update {
                 it.copy(
                     score = newScore,
                     bestScore = newBest,
-                    currentBpm = accelerateBpm(newScore)
+                    currentBpm = newBpm
                 )
             }
+
+            evaluateScoreAchievements(newScore = newScore, currentBpm = newBpm)
+
             if (newBest > state.bestScore) {
                 viewModelScope.launch {
                     persistHighScore(newBest)
                 }
             }
         } else {
+            currentStreak = 0
             applyLifePenalty(state)
         }
     }
 
     private fun applyLifePenalty(state: GameUiState) {
+        currentStreak = 0
         val newLives = state.lives - 1
         if (newLives <= 0) {
             mutableState.update {
@@ -213,6 +246,7 @@ class GameViewModel(
                     gameOverEventId = it.gameOverEventId + 1
                 )
             }
+            emitAchievementEvent(GameAchievementEvent.Increment(AchievementKey.ACH_PARTIDAS_25))
             viewModelScope.launch {
                 persistHighScore(state.score)
             }
@@ -221,6 +255,47 @@ class GameViewModel(
                 it.copy(lives = newLives)
             }
         }
+    }
+
+    private fun resetRunAchievementTrackers() {
+        currentStreak = 0
+        score50Unlocked = false
+        score100Unlocked = false
+        streak15Unlocked = false
+        pro100Unlocked = false
+        bpm180Unlocked = false
+        maestro300Unlocked = false
+    }
+
+    private fun evaluateScoreAchievements(newScore: Int, currentBpm: Int) {
+        if (!score50Unlocked && newScore >= 50) {
+            score50Unlocked = true
+            emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_SCORE_50))
+        }
+        if (!score100Unlocked && newScore >= 100) {
+            score100Unlocked = true
+            emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_SCORE_100))
+        }
+        if (!streak15Unlocked && currentStreak >= 15) {
+            streak15Unlocked = true
+            emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_RACHA_15))
+        }
+        if (!pro100Unlocked && currentSettings.difficulty == Difficulty.Pro && newScore >= 100) {
+            pro100Unlocked = true
+            emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_PRO_100))
+        }
+        if (!bpm180Unlocked && currentBpm >= 180) {
+            bpm180Unlocked = true
+            emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_BPM_180))
+        }
+        if (!maestro300Unlocked && newScore >= 300) {
+            maestro300Unlocked = true
+            emitAchievementEvent(GameAchievementEvent.Unlock(AchievementKey.ACH_MAESTRO_300))
+        }
+    }
+
+    private fun emitAchievementEvent(event: GameAchievementEvent) {
+        mutableAchievementEvents.tryEmit(event)
     }
 
     private fun shouldTriggerCambia(): Boolean {

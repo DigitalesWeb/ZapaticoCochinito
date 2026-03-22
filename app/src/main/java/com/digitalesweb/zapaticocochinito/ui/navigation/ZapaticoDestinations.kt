@@ -19,7 +19,7 @@ object ZapaticoRoutes {
 data class BottomDestination(
     val route: String,
     val icon: ImageVector,
-    @StringRes val label: Int
+    @field:StringRes val label: Int
 )
 
 val bottomDestinations = listOf(
