@@ -5,9 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.digitalesweb.zapaticocochinito.data.AppPreferencesRepository
 import com.digitalesweb.zapaticocochinito.model.AppSettings
+import com.digitalesweb.zapaticocochinito.model.Foot
 import com.digitalesweb.zapaticocochinito.model.GamePrompt
 import com.digitalesweb.zapaticocochinito.model.GameUiState
-import com.digitalesweb.zapaticocochinito.model.Foot
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,20 +19,29 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-class GameViewModel(private val repository: AppPreferencesRepository) : ViewModel() {
+class GameViewModel(
+    private val highScoreFlow: Flow<Int>,
+    private val persistHighScore: suspend (Int) -> Unit,
+    private var random: Random = Random(System.currentTimeMillis())
+) : ViewModel() {
+
+    constructor(repository: AppPreferencesRepository) : this(
+        highScoreFlow = repository.highScoreFlow,
+        persistHighScore = repository::updateHighScore
+    )
 
     private val mutableState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = mutableState.asStateFlow()
 
     private var currentSettings: AppSettings = AppSettings()
-    private var random = Random(System.currentTimeMillis())
     private var beatsSinceLastCambia = 0
     private var invertBeatsRemaining = 0
     private var cambiaAnnounceBeats = 0
+    private var hasPendingInput = false
 
     init {
         viewModelScope.launch {
-            repository.highScoreFlow.collect { highScore ->
+            highScoreFlow.collect { highScore ->
                 mutableState.update { state ->
                     state.copy(bestScore = max(state.bestScore, highScore))
                 }
@@ -55,6 +65,7 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
         beatsSinceLastCambia = 0
         invertBeatsRemaining = 0
         cambiaAnnounceBeats = 0
+        hasPendingInput = false
         mutableState.update {
             it.copy(
                 currentPrompt = GamePrompt.Left,
@@ -91,6 +102,7 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
         beatsSinceLastCambia = 0
         invertBeatsRemaining = 0
         cambiaAnnounceBeats = 0
+        hasPendingInput = false
         mutableState.update {
             it.copy(
                 currentPrompt = GamePrompt.Left,
@@ -108,8 +120,15 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
     }
 
     fun onBeat() {
-        val state = mutableState.value
+        var state = mutableState.value
         if (!state.isRunning || state.isGameOver) return
+
+        if (hasPendingInput) {
+            hasPendingInput = false
+            applyLifePenalty(state)
+            state = mutableState.value
+            if (!state.isRunning || state.isGameOver) return
+        }
 
         val nextBeat = state.beat + 1
         val shouldTriggerCambia = shouldTriggerCambia()
@@ -151,11 +170,15 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
                 currentBpm = acceleratedBpm
             )
         }
+        hasPendingInput = true
     }
 
     fun onFootPressed(foot: Foot) {
         val state = mutableState.value
         if (!state.isRunning || state.isGameOver) return
+        if (!hasPendingInput) return
+
+        hasPendingInput = false
 
         val wasCorrect = foot == state.expectedFoot
         if (wasCorrect) {
@@ -170,28 +193,32 @@ class GameViewModel(private val repository: AppPreferencesRepository) : ViewMode
             }
             if (newBest > state.bestScore) {
                 viewModelScope.launch {
-                    repository.updateHighScore(newBest)
+                    persistHighScore(newBest)
                 }
             }
         } else {
-            val newLives = state.lives - 1
-            if (newLives <= 0) {
-                mutableState.update {
-                    it.copy(
-                        lives = 0,
-                        lastScore = it.score,
-                        isRunning = false,
-                        isGameOver = true,
-                        gameOverEventId = it.gameOverEventId + 1
-                    )
-                }
-                viewModelScope.launch {
-                    repository.updateHighScore(state.score)
-                }
-            } else {
-                mutableState.update {
-                    it.copy(lives = newLives)
-                }
+            applyLifePenalty(state)
+        }
+    }
+
+    private fun applyLifePenalty(state: GameUiState) {
+        val newLives = state.lives - 1
+        if (newLives <= 0) {
+            mutableState.update {
+                it.copy(
+                    lives = 0,
+                    lastScore = it.score,
+                    isRunning = false,
+                    isGameOver = true,
+                    gameOverEventId = it.gameOverEventId + 1
+                )
+            }
+            viewModelScope.launch {
+                persistHighScore(state.score)
+            }
+        } else {
+            mutableState.update {
+                it.copy(lives = newLives)
             }
         }
     }
